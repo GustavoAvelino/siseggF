@@ -1,0 +1,56 @@
+/* Layout geral */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #262b3b;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #2a2b2e;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 2;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.13);
+}
+
+.main-content {
+  margin-left: 200px; /* Largura do sidebar */
+  box-sizing: border-box;
+  width: calc(100% - 200px); /* Espaço restante após o sidebar */
+  min-height: calc(100vh - 50px); /* Altura restante após o header */
+  background-color: #1d212e;
+  color: white;
+  overflow-y: auto; /* Apenas rolagem vertical no conteúdo */
+  overflow-x: hidden;
+}
+
+/* Página inicial */
+.homepage {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  height: calc(100vh - 50px); /* Altura total da página menos o header */
+  background-color: #1d212e;
+}
+
+.homepage h1 {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 8rem;
+  color: rgb(4, 204, 204);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Efeito de sombra borrada */
+  filter: brightness(0.6); /* Simula o "pano preto" */
+  text-align: center;
+}

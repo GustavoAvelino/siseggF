@@ -1,0 +1,76 @@
+.container-seguradora {
+    width: 100%;
+    height: 863px;
+    background-color: #1d212e;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.356);
+    padding: 40px;
+    border-radius: 10px;
+    color: white;
+}
+
+.container-seguradora h1 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 50px;
+}
+
+.input-field-seguradora {
+    margin-bottom: 30px;
+}
+
+.input-field-seguradora input {
+    height: 30px;
+    margin-left: 10px;
+    border-radius: 12px;
+    border: 0.1px black solid;
+    margin-top: 10px;
+    width: 60%;
+}
+
+.input-field-seguradora select {
+    height: 30px;
+}
+
+.row-seg {
+    width: 60%;
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+}
+
+input:focus-visible {
+    background-color: aliceblue;
+}
+
+.container-seguradora button {
+    background-color: rgb(255, 255, 255);
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 80px;
+}
+
+.botoes-seguradora {
+    margin-left: 75%;
+}
+
+.container-seguradora button:hover {
+    background-color: aliceblue;
+}
+
+#cnp-tele-row-seguradora {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+#title-seguradora{
+    color: white;
+}
+.row-seg input{
+    width: 100%;
+}

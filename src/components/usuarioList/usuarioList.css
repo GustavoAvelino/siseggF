@@ -1,0 +1,141 @@
+/* Tabela de usuários */
+#usuarioTable, tr, td, th {
+    border: 1px solid;
+    height: 50px;
+}
+
+#usuarioTable {
+    background-color: aliceblue; /* AliceBlue para a tabela */
+    width: 100%;
+    border-collapse: collapse;
+    color: #000;
+}
+
+/* Ajustando o tamanho das colunas */
+#usuarioTable th:nth-child(1), /* Coluna ID */
+#usuarioTable td:nth-child(1) {
+    width: 10%; /* Ajuste para a largura do ID */
+    text-align: center; /* Centralizando o conteúdo */
+}
+
+#usuarioTable th:nth-child(2), /* Coluna Nome Completo */
+#usuarioTable td:nth-child(2) {
+    width: 30%; /* Largura maior para o nome */
+    text-align: center;
+}
+
+#usuarioTable th:nth-child(3), /* Coluna Email */
+#usuarioTable td:nth-child(3) {
+    width: 30%; /* Ajuste para a largura do email */
+    text-align: center;
+}
+
+#usuarioTable th:nth-child(4), /* Coluna Role */
+#usuarioTable td:nth-child(4) {
+    width: 15%; /* Ajuste para a largura do Role */
+    text-align: center;
+}
+
+#usuarioTable th:nth-child(5), /* Coluna Selecionar */
+#usuarioTable td:nth-child(5) {
+    width: 15%;
+    text-align: center;
+}
+
+/* Estilo para a linha de pesquisa */
+#pesquisa th {
+    border: none;
+    padding: 10px;
+    justify-items: baseline; /* Manter a justificação */
+}
+
+/* Estilo para o botão de pesquisa */
+#pesquisa button {
+    padding: 8px 16px;
+    background-color: #007bff !important; /* Azul padrão */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#pesquisa button:hover {
+    background-color: #0056b3 !important; /* Azul mais escuro ao passar o mouse */
+}
+
+/* Container da lista de usuários */
+.usuarioListCont {
+    position: fixed;
+    background-color: aliceblue; /* AliceBlue para o fundo */
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    overflow-y: auto; /* Permite o scroll vertical caso a tabela seja muito longa */
+    padding: 20px;
+}
+
+/* Estilo para os botões de selecionar */
+#usuarioTable button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#usuarioTable button:hover {
+    background-color: #0056b3; /* Cor do botão de selecionar quando passar o mouse */
+}
+
+/* Estilo para a tabela */
+#usuarioTable th {
+    background-color: #dcdcdc;
+    font-weight: bold;
+}
+
+/* Remover fundo e borda do th que contém o botão "Fechar" */
+#pesquisa th {
+    background-color: transparent; /* Remove a cor de fundo */
+    border: none; /* Remove a borda */
+    padding: 10px;
+    justify-items: baseline;
+}
+
+#pesquisa input {
+    padding: 5px;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
+/* Linhas alternadas da tabela */
+#usuarioTable tr:nth-child(even) {
+    background-color: #f9f9f9; /* Cor alternativa para linhas */
+}
+
+#usuarioTable tr:hover {
+    background-color: #f1f1f1; /* Cor de hover para linhas */
+}
+
+/* Ajustando o título da página */
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Ajuste para o botão de seleção */
+#SelectUser {
+    width: 120%;
+    margin-left: 25%;
+    margin-top: 10%;
+}

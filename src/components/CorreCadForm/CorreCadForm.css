@@ -1,0 +1,104 @@
+.container-corretora {
+    width: 100%;
+    height: 863px;
+    background-color: #1d212e;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.356);
+    padding: 40px;
+    border-radius: 10px;
+    color: white;
+}
+
+.container-corretora h1 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 90px;
+}
+
+.input-field-corretora {
+    margin-bottom: 30px;
+}
+
+.input-field-corretora input {
+    height: 30px;
+    margin-left: 10px;
+    border-radius: 12px;
+    border: 0.1px black solid;
+    margin-top: 10px;
+}
+
+
+
+#nomeCompletoCorretora, #nomeFantasiaCorretora {
+    width: 60%;
+}
+
+input:focus-visible {
+    background-color: aliceblue;
+}
+
+#ruaCorretora {
+    width: 40%;
+}
+
+#bairroCorretora {
+    width: 30%;
+}
+
+#enderecoCorretora select {
+    margin-left: 10px;
+}
+
+#estadoCorretora {
+    width: 9%;
+}
+
+#emailCorretora {
+    width: 60%;
+}
+
+.container-corretora button {
+    background-color: rgb(255, 255, 255);
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 80px;
+}
+
+.botoes-corretora {
+    margin-left: 75%;
+}
+
+.container-corretora button:hover {
+    background-color: aliceblue;
+}
+
+#cnp-tele-row-corretora {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+.row-corretora {
+    width: 60%;
+    display: flex;
+    gap: 0px; /* Espaçamento horizontal entre os campos */
+    align-items: center; /* Alinhamento vertical centralizado */
+    margin-bottom: 20px; /* Espaçamento inferior */
+}
+
+.input-field-corretora {
+    flex: 1; /* Garante que os campos tenham o mesmo tamanho */
+}
+#estadoCorretora{
+    margin-left: 10px;
+    border-radius: 40px;
+    height: 34px;
+}
+#title-corretora{
+    color: white;
+    
+}

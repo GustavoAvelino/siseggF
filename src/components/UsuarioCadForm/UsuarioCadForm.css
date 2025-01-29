@@ -1,0 +1,76 @@
+.container-usuario {
+    width: 100%;
+    height: 1000px;
+    background-color: #1d212e;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.356);
+    padding: 40px;
+    border-radius: 10px;
+    color: white;
+}
+
+.container-usuario h1 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 50px;
+}
+
+.input-field-usuario {
+    margin-bottom: 30px;
+}
+
+.input-field-usuario input {
+    height: 30px;
+    margin-left: 10px;
+    border-radius: 12px;
+    border: 0.1px black solid;
+    margin-top: 10px;
+   
+}
+
+.input-field-usuario select {
+    height: 35px;
+    
+    margin-top: 10px;
+    margin-left: 10px;
+    border-radius: 12px;
+    border: 0.1px black solid;
+}
+
+input:focus-visible {
+    background-color: aliceblue;
+}
+
+.container-usuario button {
+    background-color: rgb(255, 255, 255);
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 80px;
+}
+
+.container-usuario button:hover {
+    background-color: rgb(222, 230, 236);
+}
+
+.botoes-usuario {
+    margin-left: 75%;
+}
+
+#emailUsuario, #nomeUsuario {
+    width: 60%;
+}
+
+#roleUsuario {
+    width: 20%;
+}
+#senhaUsuario, #confSenhaUsuario{
+    width: 20%
+}
+#title-usuario{
+    color: white;
+}
