@@ -7,6 +7,7 @@ import ClienteCad from "./pages/clienteCad/CliCad";
 import CorretorCad from "./pages/corretoraCad/correcad";
 import UsuarioCad from "./pages/usuarioCad/usuariocad";
 import SeguradoraCad from "./pages/SeguradoraCad/SeguradoraCad";
+import ProtectedRoute from "./utils/ProtectedRoute"; // Importa o componente
 import "./App.css";
 
 const App = () => {
@@ -16,13 +17,7 @@ const App = () => {
   useEffect(() => {
     // Verifica se o token JWT está no localStorage
     const token = localStorage.getItem("jwt");
-    if (token) {
-      // Se existir um token, define autenticação como verdadeira
-      setIsAuthenticated(true);
-    } else {
-      // Se não houver token, define como falso
-      setIsAuthenticated(false);
-    }
+    setIsAuthenticated(!!token); // Define como verdadeiro se houver token
   }, [location]); // Atualiza o estado ao navegar entre páginas
 
   const handleLogout = () => {
@@ -35,7 +30,6 @@ const App = () => {
 
   return (
     <div className="App">
-      {/* Exibe Header e Sidebar apenas se o usuário estiver autenticado e não estiver na página de login */}
       {isAuthenticated && location.pathname !== "/login" && (
         <>
           <Sidebar />
@@ -57,13 +51,11 @@ const App = () => {
           <Route
             path="/"
             element={
-              isAuthenticated ? (
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <div className="homepage">
                   <h1>Sisegg</h1>
                 </div>
-              ) : (
-                <Navigate to="/login" />
-              )
+              </ProtectedRoute>
             }
           />
 
@@ -71,25 +63,33 @@ const App = () => {
           <Route
             path="/clientecad"
             element={
-              isAuthenticated ? <ClienteCad /> : <Navigate to="/login" />
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ClienteCad />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/corretoracad"
             element={
-              isAuthenticated ? <CorretorCad /> : <Navigate to="/login" />
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <CorretorCad />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/usuariocad"
             element={
-              isAuthenticated ? <UsuarioCad /> : <Navigate to="/login" />
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <UsuarioCad />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/seguradoracad"
             element={
-              isAuthenticated ? <SeguradoraCad /> : <Navigate to="/login" />
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <SeguradoraCad />
+              </ProtectedRoute>
             }
           />
 

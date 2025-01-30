@@ -14,20 +14,22 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      // Faz a requisição ao backend
       const response = await axios.post("http://localhost:8080/usuario/login", {
         email: username,
         senha: password,
       });
 
-      // Extrai o token e o nome do usuário da resposta
-      const { token, nomeCom } = response.data;
+      // Extrai token, nomeCom e corretoraId
+      console.log("Dados do login:", response.data); // DEBUG
+      const { token, nomeCom, corretoraId } = response.data;
+      console.log("corretoraId:", corretoraId); // DEBUG
 
-      // Salva o token e o nome do usuário no localStorage
+      // Armazena no localStorage
       localStorage.setItem("jwt", token);
       localStorage.setItem("username", nomeCom);
+      localStorage.setItem("corretoraId", corretoraId || "");
 
-      // Redireciona para a página inicial (rota "/")
+      // Redireciona
       navigate("/");
     } catch (err) {
       setError("Email ou senha inválidos. Tente novamente.");

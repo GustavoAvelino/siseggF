@@ -1,31 +1,42 @@
 import React from 'react';
-import './ClienteCadForm.css';
+import './ClienteCadForm.css';  // Ajuste se o seu CSS tiver outro nome
 import InputMask from 'react-input-mask';
 
-export const ClienteCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar, excluir, openVeiculoModal }) => {
-
+export const ClienteCadForm = ({
+  eventoTeclado,
+  salvar,
+  obj,
+  openModal,
+  atualizar,
+  excluir,
+  openVeiculoModal
+}) => {
+  
+  // Intercepta o submit do formulário para não recarregar a página
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Envio de formulário de cliente.");
   };
 
-  // Função para aplicar a máscara de CNPJ ou CPF
+  // Função para aplicar a máscara de CNPJ/CPF
   const aplicarMascaraCnpjCpf = (valor) => {
     if (valor.length === 11) {
+      // Formato: 000.000.000-00
       return valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     } else if (valor.length === 14) {
+      // Formato: 00.000.000/0000-00
       return valor.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
     }
     return valor;
   };
 
-  
-
-  // Evento ao pressionar Enter ou ao perder o foco no campo CNPJ/CPF
+  // Evento ao perder o foco no campo CNPJ/CPF
+  // Aplica a máscara automaticamente
   const handleBlurCnpjCpf = (event) => {
     const valor = event.target.value.replace(/\D/g, '');
     const valorFormatado = aplicarMascaraCnpjCpf(valor);
 
+    // Chama a mesma função `eventoTeclado` para atualizar o estado
     eventoTeclado({
       target: {
         name: event.target.name,
@@ -34,9 +45,7 @@ export const ClienteCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
     });
   };
 
-  // Evento ao pressionar Enter ou ao perder o foco no campo Telefone
-  
-
+  // Evento ao pressionar Enter em um campo: pula para o próximo
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -48,6 +57,7 @@ export const ClienteCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
 
   return (
     <div className="container-cliente">
+      {/* Botões de ação */}
       <div className="botoes-cliente">
         <button onClick={salvar}>Salvar</button>
         {obj.id && <button onClick={atualizar}>Editar</button>}
@@ -55,7 +65,9 @@ export const ClienteCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
         <button onClick={openModal}>Consultar</button>
         {obj.id && <button onClick={openVeiculoModal}>Veículos</button>}
       </div>
+
       <h1>Cliente</h1>
+
       <form onSubmit={handleSubmit}>
         {/* Campo: Nome */}
         <div className="input-field-cliente">
@@ -176,15 +188,15 @@ export const ClienteCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
               value={obj.telefone}
             >
               {(inputProps) => (
-                  <input
+                <input
                   {...inputProps}
                   type="text"
                   id="telefoneCli"
                   name="telefone"
                   required
-                   />
-                 )}
-              </InputMask>
+                />
+              )}
+            </InputMask>
           </div>
         </div>
       </form>
@@ -192,4 +204,5 @@ export const ClienteCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
   );
 };
 
+// Export padrão
 export default ClienteCadForm;
