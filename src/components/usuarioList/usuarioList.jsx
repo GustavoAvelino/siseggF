@@ -1,30 +1,50 @@
-import React, { useState } from 'react';
-import style from '../usuarioList/usuarioList.css';  // Certifique-se de criar o arquivo CSS para este componente.
+import React, { useState, useEffect } from 'react';
+import style from './usuarioList.css'; // Ajuste o caminho se necessário
 
 export const UsuarioListTable = ({ vetor, selecionar, closeModal }) => {
   const [idPesquisa, setIdPesquisa] = useState('');
-  const [emailPesquisa, setEmailPesquisa] = useState('');
-  const [usuarios, setUsuarios] = useState(vetor);  // Estado para armazenar os usuários
+  const [nomePesquisa, setNomePesquisa] = useState('');
+  const [usuarios, setUsuarios] = useState(vetor);
 
-  // Função para pesquisa
+  // Atualiza a lista de usuários quando 'vetor' mudar
+  useEffect(() => {
+    setUsuarios(vetor);
+  }, [vetor]);
+
+  // Função para pesquisa refinada
   const handlePesquisa = () => {
-    let query = '';
+    // Pega a corretora do usuário logado
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    // Monta a query
+    let query = '?';
+
     if (idPesquisa) {
-      query = `?id=${idPesquisa}`;
-    } else if (emailPesquisa) {
-      query = `?email=${emailPesquisa}`;
+      query += `id=${idPesquisa}&`;
+    } else if (nomePesquisa) {
+      query += `nomeCom=${nomePesquisa}&`;
     }
 
-    if (query) {
-      fetch(`http://localhost:8080/usuario/search${query}`)
-        .then(response => response.json())
-        .then(data => {
-          setUsuarios(data);  // Atualiza a lista com os usuários encontrados
-        })
-        .catch(error => {
-          console.error("Erro ao buscar usuários:", error);
-        });
-    }
+    // Sempre filtra pela corretora
+    query += `corretoraId=${userCorretoraId}`;
+
+    // Exemplo final de URL: /usuario/search?id=3&corretoraId=10
+    // ou /usuario/search?nomeCom=joao&corretoraId=10
+    fetch(`http://localhost:8080/usuario/search${query}`)
+      .then(response => {
+        if (!response.ok) {
+          // se vier 404 (NOT_FOUND), zera a lista
+          setUsuarios([]);
+          return [];
+        }
+        return response.json();
+      })
+      .then(data => {
+        setUsuarios(data);
+      })
+      .catch(error => {
+        console.error("Erro ao buscar usuários:", error);
+      });
   };
 
   return (
@@ -33,32 +53,30 @@ export const UsuarioListTable = ({ vetor, selecionar, closeModal }) => {
         <thead>
           <tr id="pesquisa">
             <th>
-              <div className="pesquisacom input-field">
-                <input 
-                  type="text" 
-                  id="pesquisacom" 
-                  name="pesquisacom" 
-                  placeholder="ID" 
-                  value={idPesquisa}
-                  onChange={(e) => setIdPesquisa(e.target.value)}
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="ID"
+                value={idPesquisa}
+                onChange={(e) => setIdPesquisa(e.target.value)}
+              />
             </th>
             <th>
-              <div className="pesquisacomdesc input-field">
-                <input 
-                  type="text" 
-                  id="pesquisacomdesc" 
-                  name="pesquisacomdesc" 
-                  placeholder="Email" 
-                  value={emailPesquisa}
-                  onChange={(e) => setEmailPesquisa(e.target.value)}
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Nome"
+                value={nomePesquisa}
+                onChange={(e) => setNomePesquisa(e.target.value)}
+              />
             </th>
-            <th><button onClick={handlePesquisa}>Pesquisar</button></th>
-            <th></th>
-            <th><button onClick={closeModal}>Fechar</button></th>
+            <th>
+               
+            </th>
+            <th>
+              <button onClick={handlePesquisa}>Pesquisar</button>  
+            </th>
+            <th>
+            <button onClick={closeModal}>Fechar</button>
+            </th>
           </tr>
           <tr>
             <th>ID</th>
@@ -69,14 +87,24 @@ export const UsuarioListTable = ({ vetor, selecionar, closeModal }) => {
           </tr>
         </thead>
         <tbody>
-          {usuarios.length > 0 ? (
+          {usuarios && usuarios.length > 0 ? (
             usuarios.map((usuario) => (
               <tr key={usuario.id}>
                 <td>{usuario.id}</td>
                 <td>{usuario.nomeCom}</td>
                 <td>{usuario.email}</td>
-                <td>{usuario.role === 1 ? 'Administrador' : usuario.role === 2 ? 'Vendedor' : 'Financeiro'}</td>
-                <td><button onClick={() => selecionar(usuario.id)}>Selecionar</button></td>
+                <td>
+                  {usuario.role === 1
+                    ? 'Administrador'
+                    : usuario.role === 2
+                    ? 'Vendedor'
+                    : 'Financeiro'}
+                </td>
+                <td>
+                  <button onClick={() => selecionar(usuario.id)}>
+                    Selecionar
+                  </button>
+                </td>
               </tr>
             ))
           ) : (

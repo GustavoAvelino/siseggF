@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InputMask from 'react-input-mask';  
 import './SeguradoraCadForm.css';
 
 export const SeguradoraCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar, excluir }) => {
-
+ const [formValido, setFormValido] = useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Envio de formulário de seguradora.");
@@ -20,10 +20,32 @@ export const SeguradoraCadForm = ({ eventoTeclado, salvar, obj, openModal, atual
     }
   };
 
+  useEffect(() => {
+      validarFormulario();
+    }, [obj]);
+  
+    const validarFormulario = () => {
+      if (
+        obj.nome &&
+        obj.nomefan &&
+        obj.email &&
+        obj.cnpj &&
+        obj.telefone &&
+        obj.susep &&
+        obj.impSeguradora
+      ) {
+        setFormValido(true);
+      } else {
+        setFormValido(false);
+      }
+    };
+
   return (
     <div className="container-seguradora">
       <div className="botoes-seguradora">
-        <button onClick={salvar}>Salvar</button>
+      <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
+          Salvar
+        </button>
         {obj.id && <button onClick={atualizar}>Editar</button>}
         {obj.id && <button onClick={excluir}>Excluir</button>}
         <button onClick={openModal}>Consultar</button>

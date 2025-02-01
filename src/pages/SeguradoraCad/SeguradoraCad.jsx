@@ -3,6 +3,7 @@ import SeguradoraCadForm from './../../components/SeguradoraCadForm/SeguradoraCa
 import SeguradoraList from './../../components/SeguradoraList/SeguradoraList';
 
 function SeguradoraCad() {
+  // Objeto inicial de seguradora, agora incluindo corretoraId
   const seguradoraInicial = {
     id: '',
     nome: '',
@@ -11,19 +12,36 @@ function SeguradoraCad() {
     email: '',
     telefone: '',
     susep: '',
-    impSeguradora: ''
+    impSeguradora: '',
+    corretoraId: '' // Vinculação da corretora
   };
 
   const [objSeguradora, setSeguradora] = useState(seguradoraInicial);
   const [seguradoras, setSeguradoras] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  // Buscar todas as seguradoras
+  // Buscar seguradoras filtrando pela corretora do usuário logado
   const fetchSeguradoras = () => {
-    fetch('http://localhost:8080/seguradora')
-      .then(response => response.json())
-      .then(data => setSeguradoras(data))
-      .catch(error => {
+    // Pegamos do localStorage
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    // Monta a URL de busca
+    // Se quiser buscar tudo da corretora, sem nenhum outro filtro, podemos usar:
+    // /seguradora/search?corretoraId=...
+    const url = `http://localhost:8080/seguradora/search?corretoraId=${userCorretoraId}`;
+
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          // se vier 404, retorna array vazio
+          return [];
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setSeguradoras(data);
+      })
+      .catch((error) => {
         console.error("Erro ao buscar seguradoras:", error);
       });
   };
@@ -51,13 +69,22 @@ function SeguradoraCad() {
 
   // Salvar nova seguradora
   const salvar = () => {
+    // Pega o corretoraId do usuário logado
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    // Monta objeto para salvar
+    const seguradoraParaSalvar = {
+      ...objSeguradora,
+      corretoraId: userCorretoraId
+    };
+
     fetch('http://localhost:8080/seguradora/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json',
       },
-      body: JSON.stringify(objSeguradora),
+      body: JSON.stringify(seguradoraParaSalvar),
     })
       .then(() => {
         fetchSeguradoras();
@@ -74,13 +101,23 @@ function SeguradoraCad() {
       alert("Selecione uma seguradora para editar.");
       return;
     }
+
+    // Pega o corretoraId do usuário logado
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    // Monta objeto para atualizar
+    const seguradoraParaAtualizar = {
+      ...objSeguradora,
+      corretoraId: userCorretoraId
+    };
+
     fetch(`http://localhost:8080/seguradora/update/${objSeguradora.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json',
       },
-      body: JSON.stringify(objSeguradora),
+      body: JSON.stringify(seguradoraParaAtualizar),
     })
       .then(() => {
         fetchSeguradoras();
@@ -98,6 +135,7 @@ function SeguradoraCad() {
       alert("Selecione uma seguradora para excluir.");
       return;
     }
+
     fetch(`http://localhost:8080/seguradora/delete/${objSeguradora.id}`, {
       method: 'DELETE',
       headers: {

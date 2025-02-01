@@ -1,36 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import UsuarioCadForm from './../../components/UsuarioCadForm/UsuarioCadForm';
-import UsuarioListTable from './../../components/usuarioList/usuarioList';  // Importando a tabela de usuários
+import UsuarioListTable from './../../components/usuarioList/usuarioList';  // Import da tabela
+// Ajuste o caminho acima caso seja diferente no seu projeto
 
 function UsuarioCad() {
-
-  const usuario = {
+  // Objeto inicial do usuario
+  const usuarioInicial = {
     id: '',
     nomeCom: '',
     email: '',
     senha: '',
     confSenha: '',
-    role: ''
+    role: '',
+    corretoraId: '' // <-- Adicionamos para vincular a corretora
   };
 
-  const [objUsuario, setUsuario] = useState(usuario);
+  const [objUsuario, setUsuario] = useState(usuarioInicial);
   const [usuarios, setUsuarios] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Função para buscar todos os usuários
+  // Ao montar, busca usuários já filtrando pela corretora do logado
+  useEffect(() => {
+    fetchUsuarios();
+  }, []);
+
+  // Função para buscar todos os usuários (filtrando pela corretora do usuário logado)
   const fetchUsuarios = () => {
-    fetch('http://localhost:8080/usuario')
-      .then(response => response.json())
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    // Monta a URL de pesquisa incluindo corretoraId
+    const url = `http://localhost:8080/usuario/search?corretoraId=${userCorretoraId}`;
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          // se vier 404, retorna lista vazia
+          return [];
+        }
+        return response.json();
+      })
       .then(data => setUsuarios(data))
       .catch((error) => {
         console.error("Erro ao buscar usuários:", error);
       });
   };
-
-  // Chama a função de buscar usuários assim que o componente for montado
-  useEffect(() => {
-    fetchUsuarios();
-  }, []);
 
   // Função para lidar com a digitação nos campos
   const digitar = (e) => {
@@ -38,28 +51,37 @@ function UsuarioCad() {
     setUsuario({ ...objUsuario, [name]: value });
   };
 
-  // Função para abrir o modal e atualizar a lista de usuários
+  // Abre o modal e atualiza a lista de usuários
   const openModal = () => {
     fetchUsuarios();
     setIsOpen(true);
   };
 
-  // Função para selecionar um usuário
+  // Seleciona um usuário
   const selecionarUsuario = (id) => {
     const usuarioSelecionado = usuarios.find((usuario) => usuario.id === id);
     setUsuario(usuarioSelecionado);
-    setIsOpen(false); // Fechar o modal
+    setIsOpen(false); // Fecha o modal
   };
 
-  // Função para salvar um novo usuário
+  // Salvar um novo usuário
   const salvar = () => {
+    // 1) Pega a corretora do usuário logado
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    // 2) Monta objeto com corretora
+    const usuarioParaSalvar = {
+      ...objUsuario,
+      corretoraId: userCorretoraId
+    };
+
     fetch('http://localhost:8080/usuario/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json',
       },
-      body: JSON.stringify(objUsuario),
+      body: JSON.stringify(usuarioParaSalvar),
     })
       .then(() => {
         fetchUsuarios();
@@ -72,12 +94,21 @@ function UsuarioCad() {
       });
   };
 
-  // Função para atualizar os dados de um usuário
+  // Atualizar usuário
   const atualizar = () => {
     if (!objUsuario.id) {
       alert("Selecione um usuário para editar.");
       return;
     }
+
+    // 1) Pega a corretora do usuário logado
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    // 2) Monta objeto para atualizar
+    const usuarioParaAtualizar = {
+      ...objUsuario,
+      corretoraId: userCorretoraId
+    };
 
     fetch(`http://localhost:8080/usuario/update/${objUsuario.id}`, {
       method: 'PUT',
@@ -85,7 +116,7 @@ function UsuarioCad() {
         'Content-Type': 'application/json',
         'accept': 'application/json',
       },
-      body: JSON.stringify(objUsuario),
+      body: JSON.stringify(usuarioParaAtualizar),
     })
       .then(() => {
         fetchUsuarios();
@@ -99,7 +130,7 @@ function UsuarioCad() {
       });
   };
 
-  // Função para excluir um usuário
+  // Excluir usuário
   const excluir = () => {
     if (!objUsuario.id) {
       alert("Selecione um usuário para excluir.");
@@ -125,25 +156,29 @@ function UsuarioCad() {
       });
   };
 
-  // Função de limpeza do formulário
+  // Limpa o formulário
   const limparFormulario = () => {
-    setUsuario({
-      id: '',
-      nomeCom: '',
-      email: '',
-      senha: '',
-      confSenha: '',
-      role: ''
-    });
+    setUsuario(usuarioInicial);
   };
 
   return (
     <div className="UsuarioCad">
-      <UsuarioCadForm eventoTeclado={digitar} salvar={salvar} obj={objUsuario} openModal={openModal} atualizar={atualizar} excluir={excluir} />
+      <UsuarioCadForm
+        eventoTeclado={digitar}
+        salvar={salvar}
+        obj={objUsuario}
+        openModal={openModal}
+        atualizar={atualizar}
+        excluir={excluir}
+      />
 
       {isOpen && (
         <div className="modal">
-          <UsuarioListTable vetor={usuarios} selecionar={selecionarUsuario} closeModal={() => setIsOpen(false)} />
+          <UsuarioListTable
+            vetor={usuarios}
+            selecionar={selecionarUsuario}
+            closeModal={() => setIsOpen(false)}
+          />
         </div>
       )}
     </div>

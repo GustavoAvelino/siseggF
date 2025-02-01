@@ -74,3 +74,8 @@ input:focus-visible {
 #title-usuario{
     color: white;
 }
+.disabled-button {
+    background-color: grey !important;
+    cursor: not-allowed !important;
+    opacity: 0.5;
+}

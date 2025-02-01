@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './ClienteList.css'; // Ajuste se o nome do seu CSS for diferente
+import { toast } from 'react-toastify';
 
 // Recebe o array inicial de clientes (vetor), função selecionar(id) e closeModal()
-export const ClienteListTable = ({ vetor, selecionar, closeModal }) => {
+export const ClienteList = ({ vetor, selecionar, closeModal }) => {
   // Estados de pesquisa
   const [idPesquisa, setIdPesquisa] = useState('');
   const [nomePesquisa, setNomePesquisa] = useState('');
@@ -18,13 +19,9 @@ export const ClienteListTable = ({ vetor, selecionar, closeModal }) => {
 
   // Função para pesquisa refinada
   const handlePesquisa = () => {
-    // Pega a corretora do usuário logado
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    // Monta a query
-    // começamos com '?', e adicionamos cada parâmetro se preenchido
     let query = '?';
-
     if (idPesquisa) {
       query += `id=${idPesquisa}&`;
     } else if (cnpjCpfPesquisa) {
@@ -32,25 +29,26 @@ export const ClienteListTable = ({ vetor, selecionar, closeModal }) => {
     } else if (nomePesquisa) {
       query += `descricao=${nomePesquisa}&`;
     }
-
-    // Sempre filtra pela corretora do usuário
     query += `corretoraId=${userCorretoraId}`;
 
-    // Exemplo final: /cliente/search?id=10&corretoraId=5, ou /cliente/search?cnpjCpf=1234&corretoraId=5
     fetch(`http://localhost:8080/cliente/search${query}`)
-      .then(response => {
+      .then(async (response) => {
         if (!response.ok) {
-          // Se vier 404 (NOT_FOUND), zera a lista
+          const errorMessage = await response.text();
+          toast.error(errorMessage || 'Erro ao pesquisar clientes');
           setClientes([]);
           return [];
         }
         return response.json();
       })
       .then(data => {
-        setClientes(data);
+        if (data) {
+          setClientes(data);
+        }
       })
       .catch(error => {
         console.error('Erro ao buscar clientes:', error);
+        toast.error('Erro inesperado ao buscar clientes');
       });
   };
 
@@ -124,4 +122,4 @@ export const ClienteListTable = ({ vetor, selecionar, closeModal }) => {
   );
 };
 
-export default ClienteListTable;
+export default ClienteList;

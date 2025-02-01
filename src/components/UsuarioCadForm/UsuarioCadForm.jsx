@@ -2,8 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './UsuarioCadForm.css';
 
 export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar, excluir }) => {
-
   const [role, setRole] = useState(obj.role || "");
+  const [erroSenha, setErroSenha] = useState("");
+  const [formValido, setFormValido] = useState(false);
+
+  useEffect(() => {
+    setRole(obj.role || "");
+  }, [obj.role]);
+
+  useEffect(() => {
+    validarFormulario();
+  }, [obj, erroSenha]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -25,21 +34,50 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
     eventoTeclado(event);
   };
 
-  useEffect(() => {
-    setRole(obj.role || "");
-  }, [obj.role]);
+  const validarSenha = (event) => {
+    eventoTeclado(event);
+    const { name, value } = event.target;
+
+    if (name === "confSenha" || name === "senha") {
+      if (name === "confSenha" && value !== obj.senha) {
+        setErroSenha("As senhas não coincidem!");
+      } else if (name === "senha" && obj.confSenha && value !== obj.confSenha) {
+        setErroSenha("As senhas não coincidem!");
+      } else {
+        setErroSenha(""); // Limpa o erro quando as senhas são iguais
+      }
+    }
+
+    validarFormulario();
+  };
+
+  const validarFormulario = () => {
+    if (
+      obj.nomeCom &&
+      obj.email &&
+      obj.senha &&
+      obj.confSenha &&
+      obj.role &&
+      erroSenha === ""
+    ) {
+      setFormValido(true);
+    } else {
+      setFormValido(false);
+    }
+  };
 
   return (
     <div className="container-usuario">
       <div className="botoes-usuario">
-        <button onClick={salvar}>Salvar</button>
+        <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
+          Salvar
+        </button>
         {obj.id && <button onClick={atualizar}>Editar</button>}
         {obj.id && <button onClick={excluir}>Excluir</button>}
         <button onClick={openModal}>Consultar</button>
       </div>
       <h1 id='title-usuario'>Usuário</h1>
       <form onSubmit={handleSubmit}>
-        {/* Campo: Nome Completo */}
         <div className="input-field-usuario">
           <label htmlFor="nomeCom">Nome Completo:</label><br />
           <input
@@ -53,7 +91,6 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
           />
         </div>
 
-        {/* Campo: Email */}
         <div className="input-field-usuario">
           <label htmlFor="emailUsuario">Email:</label><br />
           <input
@@ -67,7 +104,6 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
           />
         </div>
 
-        {/* Campo: Senha */}
         <div className="input-field-usuario">
           <label htmlFor="senhaUsuario">Senha:</label><br />
           <input
@@ -75,13 +111,12 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
             id="senhaUsuario"
             name="senha"
             onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
+            onChange={validarSenha}
             value={obj.senha}
             required
           />
         </div>
 
-        {/* Campo: Confirmar Senha */}
         <div className="input-field-usuario">
           <label htmlFor="confSenhaUsuario">Confirmar Senha:</label><br />
           <input
@@ -89,13 +124,13 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
             id="confSenhaUsuario"
             name="confSenha"
             onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
+            onChange={validarSenha}
             value={obj.confSenha}
             required
           />
+          {erroSenha && <p className="erro">{erroSenha}</p>}
         </div>
 
-        {/* Campo: Nível de Autoridade */}
         <div className="input-field-usuario">
           <label htmlFor="roleUsuario">Nível de Autoridade:</label><br />
           <select

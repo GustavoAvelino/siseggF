@@ -26,6 +26,8 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
     }
   }, []);
 
+  
+
   return (
     <form onSubmit={handleSubmit} className="form-veiculo">
       <div className="form-veiculo-grid">

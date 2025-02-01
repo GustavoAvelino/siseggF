@@ -19,7 +19,7 @@ export const Sidebar = () => {
       <nav>
         <div id="logo-container">
                   {/* Link para a rota Home */}
-                  <Link to="/home" id="logo">Sisseg</Link>
+                  <Link to="/home" id="logo">Sisegg</Link>
         </div>
         
         <div id="nav-container">

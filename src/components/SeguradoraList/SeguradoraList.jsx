@@ -1,33 +1,49 @@
-import React, { useState } from 'react';
-import styles from './SeguradoraList.css';
+import React, { useState, useEffect } from 'react';
+import './SeguradoraList.css';
 
-export const SeguradoraListTable = ({ vetor, selecionar, closeModal }) => {
+export const SeguradoraList = ({ vetor, selecionar, closeModal }) => {
   const [idPesquisa, setIdPesquisa] = useState('');
   const [nomePesquisa, setNomePesquisa] = useState('');
   const [cnpjPesquisa, setCnpjPesquisa] = useState('');
-  const [seguradoras, setSeguradoras] = useState(vetor);
+  const [seguradoras, setSeguradoras] = useState([]);
+
+  useEffect(() => {
+    setSeguradoras(vetor);
+  }, [vetor]);
 
   // Função para pesquisa
   const handlePesquisa = () => {
-    let query = '';
+    // Pega a corretora do usuário logado
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+
+    let query = '?';
+
     if (idPesquisa) {
-      query = `?id=${idPesquisa}`;
+      query += `id=${idPesquisa}&`;
     } else if (cnpjPesquisa) {
-      query = `?cnpj=${cnpjPesquisa}`;
+      query += `cnpj=${cnpjPesquisa}&`;
     } else if (nomePesquisa) {
-      query = `?descricao=${nomePesquisa}`;
+      query += `descricao=${nomePesquisa}&`;
     }
 
-    if (query) {
-      fetch(`http://localhost:8080/seguradora/search${query}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setSeguradoras(data);
-        })
-        .catch((error) => {
-          console.error('Erro ao buscar seguradoras:', error);
-        });
-    }
+    // Sempre filtra pela corretora
+    query += `corretoraId=${userCorretoraId}`;
+
+    fetch(`http://localhost:8080/seguradora/search${query}`)
+      .then((response) => {
+        if (!response.ok) {
+          // se vier 404, retorna lista vazia
+          setSeguradoras([]);
+          return [];
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setSeguradoras(data);
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar seguradoras:', error);
+      });
   };
 
   return (
@@ -75,14 +91,14 @@ export const SeguradoraListTable = ({ vetor, selecionar, closeModal }) => {
           </tr>
         </thead>
         <tbody>
-          {seguradoras.length > 0 ? (
+          {seguradoras && seguradoras.length > 0 ? (
             seguradoras.map((seguradora) => (
               <tr key={seguradora.id}>
                 <td>{seguradora.id}</td>
                 <td>{seguradora.cnpj}</td>
                 <td>{seguradora.nome}</td>
                 <td>{seguradora.nomefan}</td>
-                <td id='SelectSeg'>
+                <td>
                   <button onClick={() => selecionar(seguradora.id)}>Selecionar</button>
                 </td>
               </tr>
@@ -98,4 +114,4 @@ export const SeguradoraListTable = ({ vetor, selecionar, closeModal }) => {
   );
 };
 
-export default SeguradoraListTable;
+export default SeguradoraList;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ClienteCadForm.css';  // Ajuste se o seu CSS tiver outro nome
 import InputMask from 'react-input-mask';
 
@@ -11,41 +11,60 @@ export const ClienteCadForm = ({
   excluir,
   openVeiculoModal
 }) => {
-  
-  // Intercepta o submit do formulário para não recarregar a página
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Envio de formulário de cliente.");
+  const [formValido, setFormValido] = useState(false);
+
+  useEffect(() => {
+    validarFormulario();
+  }, [obj]);
+
+  const validarFormulario = () => {
+    if (
+      obj.nome &&
+      obj.nomeSocial &&
+      obj.email &&
+      obj.dataNascimento &&
+      obj.sexo &&
+      obj.estadoCivil &&
+      obj.cnpjCpf &&
+      obj.telefone
+    ) {
+      setFormValido(true);
+    } else {
+      setFormValido(false);
+    }
   };
 
-  // Função para aplicar a máscara de CNPJ/CPF
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Se precisar, pode exibir um toast aqui, 
+    // mas normalmente já chamamos "salvar" ou "atualizar" externamente
+  };
+
   const aplicarMascaraCnpjCpf = (valor) => {
     if (valor.length === 11) {
-      // Formato: 000.000.000-00
+      // CPF
       return valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     } else if (valor.length === 14) {
-      // Formato: 00.000.000/0000-00
+      // CNPJ
       return valor.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
     }
     return valor;
   };
 
-  // Evento ao perder o foco no campo CNPJ/CPF
-  // Aplica a máscara automaticamente
   const handleBlurCnpjCpf = (event) => {
     const valor = event.target.value.replace(/\D/g, '');
     const valorFormatado = aplicarMascaraCnpjCpf(valor);
 
-    // Chama a mesma função `eventoTeclado` para atualizar o estado
     eventoTeclado({
       target: {
         name: event.target.name,
         value: valorFormatado,
       },
     });
+
+    validarFormulario();
   };
 
-  // Evento ao pressionar Enter em um campo: pula para o próximo
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -57,9 +76,10 @@ export const ClienteCadForm = ({
 
   return (
     <div className="container-cliente">
-      {/* Botões de ação */}
       <div className="botoes-cliente">
-        <button onClick={salvar}>Salvar</button>
+        <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
+          Salvar
+        </button>
         {obj.id && <button onClick={atualizar}>Editar</button>}
         {obj.id && <button onClick={excluir}>Excluir</button>}
         <button onClick={openModal}>Consultar</button>
@@ -69,7 +89,6 @@ export const ClienteCadForm = ({
       <h1>Cliente</h1>
 
       <form onSubmit={handleSubmit}>
-        {/* Campo: Nome */}
         <div className="input-field-cliente">
           <label htmlFor="nomeCli">Nome:</label><br />
           <input
@@ -78,12 +97,12 @@ export const ClienteCadForm = ({
             name="nome"
             onKeyDown={handleKeyDown}
             onChange={eventoTeclado}
+            onBlur={validarFormulario}
             value={obj.nome}
             required
           />
         </div>
 
-        {/* Campo: Nome Social */}
         <div className="input-field-cliente">
           <label htmlFor="nomeSocialCli">Nome Social:</label><br />
           <input
@@ -92,12 +111,12 @@ export const ClienteCadForm = ({
             name="nomeSocial"
             onKeyDown={handleKeyDown}
             onChange={eventoTeclado}
+            onBlur={validarFormulario}
             value={obj.nomeSocial}
             required
           />
         </div>
 
-        {/* Campo: Email */}
         <div className="input-field-cliente">
           <label htmlFor="emailCli">Email:</label><br />
           <input
@@ -106,12 +125,12 @@ export const ClienteCadForm = ({
             name="email"
             onKeyDown={handleKeyDown}
             onChange={eventoTeclado}
+            onBlur={validarFormulario}
             value={obj.email}
             required
           />
         </div>
 
-        {/* Linha com Data de Nascimento, Sexo e Estado Civil */}
         <div className="row-cliente">
           <div className="input-field-cliente">
             <label htmlFor="dataNascimentoCli">Data de Nascimento:</label><br />
@@ -121,6 +140,7 @@ export const ClienteCadForm = ({
               name="dataNascimento"
               onKeyDown={handleKeyDown}
               onChange={eventoTeclado}
+              onBlur={validarFormulario}
               value={obj.dataNascimento}
               required
             />
@@ -133,6 +153,7 @@ export const ClienteCadForm = ({
               name="sexo"
               onKeyDown={handleKeyDown}
               onChange={eventoTeclado}
+              onBlur={validarFormulario}
               value={obj.sexo}
               required
             >
@@ -150,6 +171,7 @@ export const ClienteCadForm = ({
               name="estadoCivil"
               onKeyDown={handleKeyDown}
               onChange={eventoTeclado}
+              onBlur={validarFormulario}
               value={obj.estadoCivil}
               required
             >
@@ -163,7 +185,6 @@ export const ClienteCadForm = ({
           </div>
         </div>
 
-        {/* Linha com CNPJ/CPF e Telefone */}
         <div className="row-cliente">
           <div className="input-field-cliente">
             <label htmlFor="cnpjCpfCli">CNPJ/CPF:</label><br />
@@ -185,6 +206,7 @@ export const ClienteCadForm = ({
               mask="(99) 99999-9999"
               onKeyDown={handleKeyDown}
               onChange={eventoTeclado}
+              onBlur={validarFormulario}
               value={obj.telefone}
             >
               {(inputProps) => (
@@ -204,5 +226,4 @@ export const ClienteCadForm = ({
   );
 };
 
-// Export padrão
 export default ClienteCadForm;

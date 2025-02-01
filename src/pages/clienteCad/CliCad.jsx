@@ -3,6 +3,7 @@ import ClienteCadForm from './../../components/ClienteCadForm/ClienteCadForm';
 import ClienteList from './../../components/ClienteList/ClienteList';
 import VeiculoCad from './../VeiculoCad/VeiculoCad';
 import './CliCad.css'; // Se tiver um CSS específico para esta página
+import { toast } from 'react-toastify';
 
 function ClienteCad() {
   // Objeto inicial do cliente
@@ -39,19 +40,26 @@ function ClienteCad() {
     const url = `http://localhost:8080/cliente/search?corretoraId=${userCorretoraId}`;
 
     fetch(url)
-      .then(response => {
+      .then(async response => {
         if (!response.ok) {
-          // Se vier 404, retorna lista vazia
-          return [];
+          // Se for 404 ou outro status de erro, podemos lidar aqui
+          const errorMessage = await response.text();
+          console.error('Erro ao buscar clientes:', errorMessage);
+          setClientes([]); // Zera a lista se deu erro
+          toast.error(errorMessage || 'Erro ao buscar clientes');
+          return;
         }
         return response.json();
       })
       .then(data => {
-        console.log('Clientes obtidos:', data);
-        setClientes(data);
+        if (data) {
+          console.log('Clientes obtidos:', data);
+          setClientes(data);
+        }
       })
       .catch(error => {
         console.error('Erro ao buscar clientes:', error);
+        toast.error('Erro inesperado ao buscar clientes');
       });
   };
 
@@ -70,7 +78,7 @@ function ClienteCad() {
     if (objCliente.id) {
       setIsOpenVeiculoModal(true);
     } else {
-      alert('Por favor, selecione um cliente primeiro.');
+      toast.warning('Por favor, selecione um cliente primeiro.');
     }
   };
   const closeVeiculoModal = () => {
@@ -89,9 +97,7 @@ function ClienteCad() {
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
     console.log('Salvando com corretoraId:', userCorretoraId);
 
-    // Copia objCliente e define a corretora
     const clienteParaSalvar = { ...objCliente, corretoraId: userCorretoraId };
-    console.log('Cliente para salvar:', clienteParaSalvar);
 
     fetch('http://localhost:8080/cliente/save', {
       method: 'POST',
@@ -101,24 +107,36 @@ function ClienteCad() {
       },
       body: JSON.stringify(clienteParaSalvar),
     })
-      .then(() => {
-        // Recarrega a lista e limpa o form
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          if (response.status === 400) {
+            toast.error(errorMessage || 'Dados inválidos ao cadastrar cliente.');
+          } else {
+            toast.error(errorMessage || 'Erro ao salvar o cliente.');
+          }
+          return;
+        }
+        // Sucesso
+        toast.success('Cliente salvo com sucesso!');
         fetchClientes();
         limparFormulario();
       })
-      .catch(error => console.error('Erro ao salvar o cliente:', error));
+      .catch(error => {
+        console.error('Erro ao salvar o cliente:', error);
+        toast.error('Erro inesperado ao salvar o cliente');
+      });
   };
 
   // Atualizar cliente existente
   const atualizar = () => {
     if (!objCliente.id) {
-      alert('Selecione um cliente para editar.');
+      toast.warning('Selecione um cliente para editar.');
       return;
     }
 
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
     const clienteParaSalvar = { ...objCliente, corretoraId: userCorretoraId };
-    console.log('Atualizando cliente:', clienteParaSalvar);
 
     fetch(`http://localhost:8080/cliente/update/${objCliente.id}`, {
       method: 'PUT',
@@ -128,19 +146,31 @@ function ClienteCad() {
       },
       body: JSON.stringify(clienteParaSalvar),
     })
-      .then(() => {
-        // Recarrega a lista e limpa o form
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          if (response.status === 404) {
+            toast.error(errorMessage || 'Cliente não encontrado.');
+          } else {
+            toast.error(errorMessage || 'Erro ao atualizar o cliente.');
+          }
+          return;
+        }
+        // Sucesso
+        toast.success('Cliente atualizado com sucesso!');
         fetchClientes();
-        alert('Cliente atualizado com sucesso!');
         limparFormulario();
       })
-      .catch(error => console.error('Erro ao atualizar o cliente:', error));
+      .catch(error => {
+        console.error('Erro ao atualizar o cliente:', error);
+        toast.error('Erro inesperado ao atualizar o cliente');
+      });
   };
 
   // Excluir cliente
   const excluir = () => {
     if (!objCliente.id) {
-      alert('Selecione um cliente para excluir.');
+      toast.warning('Selecione um cliente para excluir.');
       return;
     }
 
@@ -151,13 +181,28 @@ function ClienteCad() {
         'accept': 'application/json',
       },
     })
-      .then(() => {
-        // Recarrega a lista e limpa o form
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          if (response.status === 409) {
+            // CONFLICT -> violação de integridade
+            toast.error(errorMessage || 'Não foi possível excluir o cliente. Verifique se há vínculos.');
+          } else if (response.status === 404) {
+            toast.error(errorMessage || 'Cliente não encontrado.');
+          } else {
+            toast.error(errorMessage || 'Erro ao excluir o cliente.');
+          }
+          return;
+        }
+        // Sucesso
+        toast.success('Cliente excluído com sucesso!');
         fetchClientes();
-        alert('Cliente excluído com sucesso!');
         limparFormulario();
       })
-      .catch(error => console.error('Erro ao excluir o cliente:', error));
+      .catch(error => {
+        console.error('Erro ao excluir o cliente:', error);
+        toast.error('Erro inesperado ao excluir o cliente');
+      });
   };
 
   // Limpar formulário

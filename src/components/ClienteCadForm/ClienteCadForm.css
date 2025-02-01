@@ -90,3 +90,8 @@ input:focus-visible, select:focus-visible {
 .botoes-cliente {
     margin-left: 70%;
 }
+.disabled-button {
+    background-color: grey !important;
+    cursor: not-allowed !important;
+    opacity: 0.5;
+  }

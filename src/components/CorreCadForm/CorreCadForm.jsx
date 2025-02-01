@@ -4,6 +4,7 @@ import './CorreCadForm.css';
 
 export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar, excluir }) => {
   const [estado, setEstado] = useState(obj.estado || "");
+  const [formValido, setFormValido] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -17,7 +18,29 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
 
   useEffect(() => {
     setEstado(obj.estado || "");
-  }, [obj.estado]);
+    validarFormulario();
+  }, [obj]);
+
+
+  const validarFormulario = () => {
+    if (
+      obj.nome &&
+      obj.email &&
+      obj.rua &&
+      obj.numero &&
+      obj.bairro &&
+      obj.cidade &&
+      obj.estado &&
+      obj.cnpj &&
+      obj.susep &&
+      obj.telefone &&
+      obj.impCorretora
+    ) {
+      setFormValido(true);
+    } else {
+      setFormValido(false);
+    }
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -33,7 +56,9 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
   return (
     <div className="container-corretora">
       <div className="botoes-corretora">
-        <button onClick={salvar}>Salvar</button>
+      <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
+          Salvar
+        </button>
         {obj.id && <button onClick={atualizar}>Editar</button>}
         {obj.id && <button onClick={excluir}>Excluir</button>}
         <button onClick={openModal}>Consultar</button>
@@ -217,7 +242,7 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
           </div>
 
           <div className="input-field-corretora">
-          <label htmlFor="impostoCorretora">Imposto:</label><br />
+          <label htmlFor="impCorretora">Imposto:</label><br />
           <input
             type="number"
             id="impostoCorretora"
