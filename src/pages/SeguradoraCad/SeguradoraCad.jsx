@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SeguradoraCadForm from './../../components/SeguradoraCadForm/SeguradoraCadForm';
 import SeguradoraList from './../../components/SeguradoraList/SeguradoraList';
 
 function SeguradoraCad() {
-  // Objeto inicial de seguradora, agora incluindo corretoraId
   const seguradoraInicial = {
     id: '',
     nome: '',
@@ -13,36 +14,28 @@ function SeguradoraCad() {
     telefone: '',
     susep: '',
     impSeguradora: '',
-    corretoraId: '' // Vinculação da corretora
+    corretoraId: ''
   };
 
   const [objSeguradora, setSeguradora] = useState(seguradoraInicial);
   const [seguradoras, setSeguradoras] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  // Buscar seguradoras filtrando pela corretora do usuário logado
   const fetchSeguradoras = () => {
-    // Pegamos do localStorage
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    // Monta a URL de busca
-    // Se quiser buscar tudo da corretora, sem nenhum outro filtro, podemos usar:
-    // /seguradora/search?corretoraId=...
-    const url = `http://localhost:8080/seguradora/search?corretoraId=${userCorretoraId}`;
-
-    fetch(url)
-      .then((response) => {
+    fetch(`http://localhost:8080/seguradora/search?corretoraId=${userCorretoraId}`)
+      .then(async (response) => {
         if (!response.ok) {
-          // se vier 404, retorna array vazio
-          return [];
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao buscar seguradoras");
         }
         return response.json();
       })
-      .then((data) => {
-        setSeguradoras(data);
-      })
+      .then((data) => setSeguradoras(data))
       .catch((error) => {
         console.error("Erro ao buscar seguradoras:", error);
+        toast.error(error.message || "Erro ao buscar seguradoras");
       });
   };
 
@@ -50,29 +43,23 @@ function SeguradoraCad() {
     fetchSeguradoras();
   }, []);
 
-  // Lidar com a digitação nos campos
   const digitar = (e) => {
     const { name, value } = e.target;
     setSeguradora({ ...objSeguradora, [name]: value });
   };
 
-  // Abrir e fechar modal de consulta de seguradoras
   const openModal = () => setIsOpenModal(true);
   const closeModal = () => setIsOpenModal(false);
 
-  // Selecionar uma seguradora na lista
   const selecionarSeguradora = (id) => {
     const seguradoraSelecionada = seguradoras.find((s) => s.id === id);
     setSeguradora(seguradoraSelecionada);
     closeModal();
   };
 
-  // Salvar nova seguradora
   const salvar = () => {
-    // Pega o corretoraId do usuário logado
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    // Monta objeto para salvar
     const seguradoraParaSalvar = {
       ...objSeguradora,
       corretoraId: userCorretoraId
@@ -86,26 +73,32 @@ function SeguradoraCad() {
       },
       body: JSON.stringify(seguradoraParaSalvar),
     })
-      .then(() => {
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao salvar seguradora");
+        }
+        return response.text();
+      })
+      .then((message) => {
+        toast.success(message || "Seguradora salva com sucesso!");
         fetchSeguradoras();
         limparFormulario();
       })
-      .catch(error => {
-        console.error("Erro ao salvar a seguradora:", error);
+      .catch((error) => {
+        console.error("Erro ao salvar seguradora:", error);
+        toast.error(error.message || "Erro ao salvar seguradora");
       });
   };
 
-  // Atualizar seguradora existente
   const atualizar = () => {
     if (!objSeguradora.id) {
-      alert("Selecione uma seguradora para editar.");
+      toast.warning("Selecione uma seguradora para editar.");
       return;
     }
 
-    // Pega o corretoraId do usuário logado
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    // Monta objeto para atualizar
     const seguradoraParaAtualizar = {
       ...objSeguradora,
       corretoraId: userCorretoraId
@@ -119,20 +112,27 @@ function SeguradoraCad() {
       },
       body: JSON.stringify(seguradoraParaAtualizar),
     })
-      .then(() => {
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao atualizar seguradora");
+        }
+        return response.text();
+      })
+      .then((message) => {
+        toast.success(message || "Seguradora atualizada com sucesso!");
         fetchSeguradoras();
-        alert("Seguradora atualizada com sucesso!");
         limparFormulario();
       })
-      .catch(error => {
-        console.error("Erro ao atualizar a seguradora:", error);
+      .catch((error) => {
+        console.error("Erro ao atualizar seguradora:", error);
+        toast.error(error.message || "Erro ao atualizar seguradora");
       });
   };
 
-  // Excluir seguradora
   const excluir = () => {
     if (!objSeguradora.id) {
-      alert("Selecione uma seguradora para excluir.");
+      toast.warning("Selecione uma seguradora para excluir.");
       return;
     }
 
@@ -143,17 +143,24 @@ function SeguradoraCad() {
         'accept': 'application/json',
       },
     })
-      .then(() => {
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao excluir seguradora");
+        }
+        return response.text();
+      })
+      .then((message) => {
+        toast.success(message || "Seguradora excluída com sucesso!");
         fetchSeguradoras();
-        alert("Seguradora excluída com sucesso!");
         limparFormulario();
       })
-      .catch(error => {
-        console.error("Erro ao excluir a seguradora:", error);
+      .catch((error) => {
+        console.error("Erro ao excluir seguradora:", error);
+        toast.error(error.message || "Erro ao excluir seguradora");
       });
   };
 
-  // Limpar formulário
   const limparFormulario = () => {
     setSeguradora(seguradoraInicial);
   };

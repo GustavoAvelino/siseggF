@@ -1,0 +1,88 @@
+/* Container principal */
+.container-grade {
+  width: 90%;
+  max-width: 1200px;
+  background-color: #1d212e;
+  padding: 40px;
+  border-radius: 10px;
+  color: white;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.356);
+  margin: 20px auto; /* Centraliza na tela */
+}
+
+/* Título */
+.container-grade h1 {
+  text-align: center;
+  font-size: 24px;
+  color: #d4d4d4;
+  margin-bottom: 20px;
+}
+
+/* Botões */
+.botoes-grade {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.botoes-grade button {
+  background-color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.botoes-grade button:hover {
+  background-color: rgb(222, 230, 236);
+}
+
+/* Container para alinhar "Tipo de Pagamento" e "Quantidade de Parcelas" */
+.input-container {
+  display: flex;
+  gap: 20px; /* Espaçamento entre os campos */
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px;
+}
+
+
+
+/* Estilização geral dos inputs */
+.input-field-grade {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Ocupa todo o espaço disponível */
+}
+
+/* Ajusta a largura para dividir igualmente os dois campos */
+.input-container .input-field-grade {
+  width: 50%;
+}
+
+.input-field-grade label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #d4d4d4;
+}
+
+.input-field-grade input,
+.input-field-grade select {
+  width: 100%;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Remove estilo padrão do select */
+.input-field-grade select {
+  appearance: none;
+}
+
+.input-field-grade input:focus,
+.input-field-grade select:focus {
+  border-color: #00c3ff;
+  outline: none;
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ClienteCadForm.css';  // Ajuste se o seu CSS tiver outro nome
 import InputMask from 'react-input-mask';
+import { cpf, cnpj } from 'cpf-cnpj-validator';
 
 export const ClienteCadForm = ({
   eventoTeclado,
@@ -12,7 +13,7 @@ export const ClienteCadForm = ({
   openVeiculoModal
 }) => {
   const [formValido, setFormValido] = useState(false);
-
+  const [erroCnpjCpf, setErroCnpjCpf] = useState('');
   useEffect(() => {
     validarFormulario();
   }, [obj]);
@@ -26,12 +27,37 @@ export const ClienteCadForm = ({
       obj.sexo &&
       obj.estadoCivil &&
       obj.cnpjCpf &&
-      obj.telefone
+      obj.telefone &&
+      validarCnpjCpf(obj.cnpjCpf)
     ) {
       setFormValido(true);
     } else {
       setFormValido(false);
     }
+  };
+
+  const validarCnpjCpf = (valor) => {
+    const numero = valor.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+    if (numero.length === 11) {
+      // Validação de CPF
+      if (!cpf.isValid(numero)) {
+        setErroCnpjCpf('CPF inválido.');
+        return false;
+      }
+    } else if (numero.length === 14) {
+      // Validação de CNPJ
+      if (!cnpj.isValid(numero)) {
+        setErroCnpjCpf('CNPJ inválido.');
+        return false;
+      }
+    } else {
+      setErroCnpjCpf('');
+      return false;
+    }
+
+    setErroCnpjCpf('');
+    return true;
   };
 
   const handleSubmit = (event) => {
@@ -62,6 +88,7 @@ export const ClienteCadForm = ({
       },
     });
 
+    validarCnpjCpf(valor);
     validarFormulario();
   };
 
@@ -198,6 +225,7 @@ export const ClienteCadForm = ({
               value={obj.cnpjCpf}
               required
             />
+            {erroCnpjCpf && <span className="erro-texto">{erroCnpjCpf}</span>}
           </div>
 
           <div className="input-field-cliente">

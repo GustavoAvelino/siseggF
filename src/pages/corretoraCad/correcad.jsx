@@ -1,6 +1,6 @@
-// CorretoraCad.js
-
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import CorreCadForm from './../../components/CorreCadForm/CorreCadForm';
 import CorreListTable from './../../components/CorreList/CorreListTable';
 
@@ -25,13 +25,19 @@ function CorretoraCad() {
   const [corretoras, setCorretoras] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Função para buscar todas as corretoras
   const fetchCorretoras = () => {
     fetch('http://localhost:8080/corretora')
-      .then(response => response.json())
-      .then(data => setCorretoras(data))
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao buscar corretoras");
+        }
+        return response.json();
+      })
+      .then((data) => setCorretoras(data))
       .catch((error) => {
         console.error("Erro ao buscar corretoras:", error);
+        toast.error(error.message || "Erro ao buscar corretoras");
       });
   };
 
@@ -39,43 +45,34 @@ function CorretoraCad() {
     fetchCorretoras();
   }, []);
 
-  // Lida com a digitação nos campos do formulário
   const digitar = (e) => {
     const { name, value } = e.target;
     setCorretora({ ...objCorretora, [name]: value });
   };
 
-  // Função para abrir o modal (listagem)
   const openModal = () => {
     fetchCorretoras();
     setIsOpen(true);
   };
 
-  // Função para fechar o modal (listagem)
   const closeModal = () => {
     setIsOpen(false);
   };
 
-  // Ao selecionar uma corretora na tabela, vamos fazer
-  // o "split" do campo 'endereco' em rua, bairro e numero
   const selecionarCorretora = (id) => {
     const corretoraSelecionada = corretoras.find(
       (corretora) => corretora.id === id
     );
     if (!corretoraSelecionada) return;
 
-    // Faz o split do endereço (assumindo que está "rua, bairro, numero")
     let rua = '', bairro = '', numero = '';
     if (corretoraSelecionada.endereco) {
       const partes = corretoraSelecionada.endereco.split(',');
-      // Caso queira garantir que terá sempre 3 partes:
       if (partes.length === 3) {
         rua = partes[0].trim();
         bairro = partes[1].trim();
         numero = partes[2].trim();
       } else {
-        // Lógica para tratar caso haja menos ou mais de 3 partes
-        // (Ajuste conforme sua necessidade)
         rua = partes[0] ? partes[0].trim() : '';
         bairro = partes[1] ? partes[1].trim() : '';
         numero = partes[2] ? partes[2].trim() : '';
@@ -98,21 +95,17 @@ function CorretoraCad() {
       impCorretora: corretoraSelecionada.impCorretora
     });
 
-    closeModal(); // Fecha o modal
+    closeModal();
   };
 
-  // Função para salvar (POST)
   const salvar = () => {
-    // Monta o campo 'endereco' antes de enviar para o backend
     const enderecoCompleto = `${objCorretora.rua}, ${objCorretora.bairro}, ${objCorretora.numero}`;
     
-    // Cria objeto apenas com os campos realmente existentes no backend
     const corretoraToSave = {
-      // Se o ID estiver em branco, o backend vai criar novo
       id: objCorretora.id || null,
       nome: objCorretora.nome,
       nomefan: objCorretora.nomefan,
-      endereco: enderecoCompleto,  // <- concatenado
+      endereco: enderecoCompleto,
       cidade: objCorretora.cidade,
       estado: objCorretora.estado,
       cnpj: objCorretora.cnpj,
@@ -130,25 +123,32 @@ function CorretoraCad() {
       },
       body: JSON.stringify(corretoraToSave),
     })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao salvar a corretora");
+        }
+        return response.json();
+      })
       .then(() => {
+        toast.success("Corretora salva com sucesso!");
         fetchCorretoras();
         limparFormulario();
       })
       .catch((error) => {
         console.error("Erro ao salvar a corretora:", error);
+        toast.error(error.message || "Erro ao salvar a corretora");
       });
   };
 
-  // Função para atualizar (PUT)
   const atualizar = () => {
     if (!objCorretora.id) {
-      alert("Selecione uma corretora para editar.");
+      toast.warning("Selecione uma corretora para editar.");
       return;
     }
 
     const enderecoCompleto = `${objCorretora.rua}, ${objCorretora.bairro}, ${objCorretora.numero}`;
     const corretoraToUpdate = {
-      // O ID é necessário no update
       id: objCorretora.id,
       nome: objCorretora.nome,
       nomefan: objCorretora.nomefan,
@@ -171,19 +171,19 @@ function CorretoraCad() {
       body: JSON.stringify(corretoraToUpdate),
     })
       .then(() => {
+        toast.success("Corretora atualizada com sucesso!");
         fetchCorretoras();
-        alert("Corretora atualizada com sucesso!");
         limparFormulario();
       })
       .catch((error) => {
         console.error("Erro ao atualizar a corretora:", error);
+        toast.error(error.message || "Erro ao atualizar a corretora");
       });
   };
 
-  // Função para excluir (DELETE)
   const excluir = () => {
     if (!objCorretora.id) {
-      alert("Selecione uma corretora para excluir.");
+      toast.warning("Selecione uma corretora para excluir.");
       return;
     }
 
@@ -195,16 +195,16 @@ function CorretoraCad() {
       },
     })
       .then(() => {
+        toast.success("Corretora excluída com sucesso!");
         fetchCorretoras();
-        alert("Corretora excluída com sucesso!");
         limparFormulario();
       })
       .catch((error) => {
         console.error("Erro ao excluir a corretora:", error);
+        toast.error(error.message || "Erro ao excluir a corretora");
       });
   };
 
-  // Limpar o formulário
   const limparFormulario = () => {
     setCorretora(corretoraInicial);
   };
@@ -225,7 +225,7 @@ function CorretoraCad() {
           <CorreListTable 
             vetor={corretoras} 
             selecionar={selecionarCorretora} 
-            closeModal={() => setIsOpen(false)} 
+            closeModal={closeModal} 
           />
         </div>
       )}

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import VeiculoCadForm from '../../components/VeiculoCadForm/VeiculoCadForm';
 import VeiculoListTable from '../../components/VeiculoList/VeiculoList';
 import './VeiculosCad.css';
@@ -35,9 +37,10 @@ function VeiculoCad({ cliente, closeModal }) {
 
   const fetchVeiculos = (clienteId) => {
     fetch(`http://localhost:8080/veiculo/search?clienteId=${clienteId}`)
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok) {
-          throw new Error('Erro ao buscar veículos');
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || 'Erro ao buscar veículos');
         }
         return response.json();
       })
@@ -46,6 +49,7 @@ function VeiculoCad({ cliente, closeModal }) {
       })
       .catch((error) => {
         console.error('Erro ao buscar veículos:', error);
+        toast.error(error.message || 'Erro ao buscar veículos');
       });
   };
 
@@ -66,41 +70,44 @@ function VeiculoCad({ cliente, closeModal }) {
       plotadoOuAdesivado: veiculo.plotadoOuAdesivado === 'true',
     };
 
-    console.log('Payload enviado para salvar:', payload);
-
     fetch('http://localhost:8080/veiculo/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok) {
-          throw new Error('Erro ao salvar veículo');
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || 'Erro ao salvar veículo');
         }
-        alert('Veículo salvo com sucesso!');
+        return response.json();
+      })
+      .then(() => {
+        toast.success('Veículo salvo com sucesso!');
         if (cliente && cliente.id) fetchVeiculos(cliente.id);
         limparFormulario();
       })
-      .catch((error) => console.error('Erro ao salvar veículo:', error));
+      .catch((error) => {
+        console.error('Erro ao salvar veículo:', error);
+        toast.error(error.message || 'Erro ao salvar veículo');
+      });
   };
 
   const atualizar = () => {
     if (!veiculo.id) {
-      alert('Selecione um veículo para editar.');
+      toast.warning('Selecione um veículo para editar.');
       return;
     }
-  
+
     const payload = {
       ...veiculo,
       financiado: veiculo.financiado === 'true',
       chassiRemarcado: veiculo.chassiRemarcado === 'true',
       kitGas: veiculo.kitGas === 'true',
       plotadoOuAdesivado: veiculo.plotadoOuAdesivado === 'true',
-      clienteId: veiculo.clienteId // Certifique-se de enviar o clienteId
+      clienteId: veiculo.clienteId
     };
-  
-    console.log('Payload enviado para atualizar:', payload);
-  
+
     fetch(`http://localhost:8080/veiculo/update/${veiculo.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -108,26 +115,25 @@ function VeiculoCad({ cliente, closeModal }) {
     })
       .then(async (response) => {
         if (!response.ok) {
-          const error = await response.json();
-          console.error('Erro do servidor:', error);
-          throw new Error(error.message || 'Erro ao atualizar veículo');
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || 'Erro ao atualizar veículo');
         }
         return response.json();
       })
-      .then((data) => {
-        alert('Veículo atualizado com sucesso!');
-        console.log('Retorno do servidor:', data);
+      .then(() => {
+        toast.success('Veículo atualizado com sucesso!');
         if (cliente && cliente.id) fetchVeiculos(cliente.id);
         limparFormulario();
       })
       .catch((error) => {
         console.error('Erro ao atualizar veículo:', error);
+        toast.error(error.message || 'Erro ao atualizar veículo');
       });
   };
 
   const excluir = () => {
     if (!veiculo.id) {
-      alert('Selecione um veículo para excluir.');
+      toast.warning('Selecione um veículo para excluir.');
       return;
     }
 
@@ -135,15 +141,21 @@ function VeiculoCad({ cliente, closeModal }) {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok) {
-          throw new Error('Erro ao excluir veículo');
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || 'Erro ao excluir veículo');
         }
-        alert('Veículo excluído com sucesso!');
+      })
+      .then(() => {
+        toast.success('Veículo excluído com sucesso!');
         setVeiculos((prev) => prev.filter((v) => v.id !== veiculo.id));
         limparFormulario();
       })
-      .catch((error) => console.error('Erro ao excluir veículo:', error));
+      .catch((error) => {
+        console.error('Erro ao excluir veículo:', error);
+        toast.error(error.message || 'Erro ao excluir veículo');
+      });
   };
 
   const limparFormulario = () => {
@@ -153,21 +165,20 @@ function VeiculoCad({ cliente, closeModal }) {
   const openVeiculoList = () => setIsOpenVeiculoList(true);
   const closeVeiculoList = () => setIsOpenVeiculoList(false);
 
-const selecionarVeiculo = (id) => {
-  const veiculoSelecionado = veiculos.find((v) => v.id === id);
-  if (veiculoSelecionado) {
-    setVeiculo({
-      ...veiculoSelecionado,
-      financiado: veiculoSelecionado.financiado ? 'true' : 'false',
-      chassiRemarcado: veiculoSelecionado.chassiRemarcado ? 'true' : 'false',
-      kitGas: veiculoSelecionado.kitGas ? 'true' : 'false',
-      plotadoOuAdesivado: veiculoSelecionado.plotadoOuAdesivado ? 'true' : 'false',
-      clienteId: veiculoSelecionado.cliente?.id || '' // Ajuste para usar apenas o ID do cliente
-    });
-  }
-  closeVeiculoList();
-};
-
+  const selecionarVeiculo = (id) => {
+    const veiculoSelecionado = veiculos.find((v) => v.id === id);
+    if (veiculoSelecionado) {
+      setVeiculo({
+        ...veiculoSelecionado,
+        financiado: veiculoSelecionado.financiado ? 'true' : 'false',
+        chassiRemarcado: veiculoSelecionado.chassiRemarcado ? 'true' : 'false',
+        kitGas: veiculoSelecionado.kitGas ? 'true' : 'false',
+        plotadoOuAdesivado: veiculoSelecionado.plotadoOuAdesivado ? 'true' : 'false',
+        clienteId: veiculoSelecionado.cliente?.id || ''
+      });
+    }
+    closeVeiculoList();
+  };
 
   return (
     <div className="modal-container">

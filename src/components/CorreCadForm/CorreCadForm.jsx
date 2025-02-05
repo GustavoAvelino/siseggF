@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
+import { cnpj } from 'cpf-cnpj-validator';
+import { toast } from 'react-toastify';
 import './CorreCadForm.css';
 
 export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar, excluir }) => {
   const [estado, setEstado] = useState(obj.estado || "");
   const [formValido, setFormValido] = useState(false);
+  const [erroCnpj, setErroCnpj] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -21,10 +24,10 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
     validarFormulario();
   }, [obj]);
 
-
   const validarFormulario = () => {
     if (
       obj.nome &&
+      obj.nomefan &&
       obj.email &&
       obj.rua &&
       obj.numero &&
@@ -34,12 +37,40 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
       obj.cnpj &&
       obj.susep &&
       obj.telefone &&
-      obj.impCorretora
+      obj.impCorretora &&
+      validarCnpj(obj.cnpj)
     ) {
       setFormValido(true);
     } else {
       setFormValido(false);
     }
+  };
+
+  const validarCnpj = (valor) => {
+    const numero = valor.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+    if (!cnpj.isValid(numero)) {
+      setErroCnpj('CNPJ inválido.');
+      return false;
+    }
+
+    setErroCnpj('');
+    return true;
+  };
+
+  const handleBlurCnpj = (event) => {
+    const valor = event.target.value.replace(/\D/g, '');
+    const valorFormatado = cnpj.format(valor);
+
+    eventoTeclado({
+      target: {
+        name: event.target.name,
+        value: valorFormatado,
+      },
+    });
+
+    validarCnpj(valor);
+    validarFormulario();
   };
 
   const handleKeyDown = (event) => {
@@ -56,7 +87,7 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
   return (
     <div className="container-corretora">
       <div className="botoes-corretora">
-      <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
+        <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
           Salvar
         </button>
         {obj.id && <button onClick={atualizar}>Editar</button>}
@@ -69,93 +100,27 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
       <form onSubmit={handleSubmit}>
         <div className="input-field-corretora">
           <label htmlFor="nomeCompletoCorretora">Nome:</label><br />
-          <input
-            type="text"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            id="nomeCompletoCorretora"
-            name="nome"
-            value={obj.nome}
-            required
-          />
+          <input type="text" onKeyDown={handleKeyDown} onChange={eventoTeclado} id="nomeCompletoCorretora" name="nome" value={obj.nome} required />
         </div>
 
         <div className="input-field-corretora">
           <label htmlFor="nomeFantasiaCorretora">Nome Fantasia:</label><br />
-          <input
-            type="text"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            id="nomeFantasiaCorretora"
-            name="nomefan"
-            value={obj.nomefan}
-          />
+          <input type="text" onKeyDown={handleKeyDown} onChange={eventoTeclado} id="nomeFantasiaCorretora" name="nomefan" value={obj.nomefan} />
         </div>
 
         <div className="input-field-corretora">
           <label htmlFor="emailCorretora">E-mail:</label><br />
-          <input
-            type="email"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            id="emailCorretora"
-            name="email"
-            value={obj.email}
-            required
-          />
+          <input type="email" onKeyDown={handleKeyDown} onChange={eventoTeclado} id="emailCorretora" name="email" value={obj.email} required />
         </div>
 
         <div className="input-field-corretora">
           <label htmlFor="enderecoCorretora">Endereço:</label><br />
-          <input
-            type="text"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            id="ruaCorretora"
-            name="rua"
-            placeholder="Rua"
-            value={obj.rua}
-            required
-          />
-          <input
-            type="text"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            id="numeroCorretora"
-            name="numero"
-            placeholder="Número"
-            value={obj.numero}
-            required
-          />
+          <input type="text" onKeyDown={handleKeyDown} onChange={eventoTeclado} id="ruaCorretora" name="rua" placeholder="Rua" value={obj.rua} required />
+          <input type="text" onKeyDown={handleKeyDown} onChange={eventoTeclado} id="numeroCorretora" name="numero" placeholder="Número" value={obj.numero} required />
           <br /><br />
-          <input
-            type="text"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            id="bairroCorretora"
-            name="bairro"
-            placeholder="Bairro"
-            value={obj.bairro}
-            required
-          />
-          <input
-            type="text"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            id="cidadeCorretora"
-            name="cidade"
-            placeholder="Cidade"
-            value={obj.cidade}
-            required
-          />
-          <select
-            id="estadoCorretora"
-            value={estado}
-            onChange={handleSelectChange}
-            onKeyDown={handleKeyDown}
-            name="estado"
-            required
-          >
+          <input type="text" onKeyDown={handleKeyDown} onChange={eventoTeclado} id="bairroCorretora" name="bairro" placeholder="Bairro" value={obj.bairro} required />
+          <input type="text" onKeyDown={handleKeyDown} onChange={eventoTeclado} id="cidadeCorretora" name="cidade" placeholder="Cidade" value={obj.cidade} required />
+          <select id="estadoCorretora" value={estado} onChange={handleSelectChange} onKeyDown={handleKeyDown} name="estado" required>
             <option value="" disabled>Selecione o estado</option>
             <option value="AC">Acre</option>
             <option value="AL">Alagoas</option>
@@ -190,25 +155,14 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
         <div className="row-corretora">
           <div className="input-field-corretora">
             <label htmlFor="cnpjCorretora">CNPJ:</label><br />
-            <InputMask
-              mask="99.999.999/9999-99"
-              value={obj.cnpj}
-              onChange={eventoTeclado}
-              onKeyDown={handleKeyDown}
-            >
+            <InputMask mask="99.999.999/9999-99" value={obj.cnpj} onBlur={handleBlurCnpj} onChange={eventoTeclado} onKeyDown={handleKeyDown}>
               {(inputProps) => (
-                <input
-                  {...inputProps}
-                  type="text"
-                  id="cnpjCorretora"
-                  name="cnpj"
-                  required
-                />
+                <input {...inputProps} type="text" id="cnpjCorretora" name="cnpj" required />
               )}
             </InputMask>
+            {erroCnpj && <span className="erro-texto">{erroCnpj}</span>}
           </div>
-
-          <div className="input-field-corretora">
+           <div className="input-field-corretora">
             <label htmlFor="susepCorretora">SUSEP:</label><br />
             <input
               type="text"
@@ -255,8 +209,6 @@ export const CorreCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar,
         </div>
 
         </div>
-
-        
       </form>
     </div>
   );

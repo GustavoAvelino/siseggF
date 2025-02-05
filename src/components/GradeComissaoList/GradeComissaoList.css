@@ -1,0 +1,101 @@
+/* Container da tabela */
+.grade-list {
+  background-color: #1d212e;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.356);
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+/* Removendo qualquer borda residual */
+.grade-list table {
+  width: 100%;
+  border-collapse: collapse; /* Remove espaçamentos entre bordas */
+  border-spacing: 0;
+  background-color: #252527; /* Mantém a cor escura */
+}
+
+/* Cabeçalhos da tabela */
+.grade-list th {
+  background-color: #252527;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  border: none; /* Removendo as bordas */
+  color: white;
+}
+
+/* Células da tabela */
+.grade-list td {
+  padding: 10px;
+  text-align: center;
+  border: none; /* Removendo todas as bordas */
+  color: white;
+}
+
+/* Ajustando as bordas gerais da tabela */
+.grade-list tr {
+  border: none; /* Removendo qualquer borda indesejada */
+}
+
+/* Alternância de cor nas linhas */
+.grade-list tr:nth-child(even) {
+  background-color: #2a2b2e;
+}
+
+.grade-list tr:hover {
+  background-color: #32343a; /* Efeito hover */
+}
+
+/* Removendo qualquer borda extra na tabela */
+.grade-list th,
+.grade-list td {
+  border: none !important; /* Forçando a remoção das bordas */
+}
+
+/* Estilizando o botão "Selecionar" */
+.button-selecionar {
+  background-color: #008cba; /* Azul elegante */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.button-selecionar:hover {
+  background-color: #0073a7;
+  transform: scale(1.05);
+}
+
+.button-selecionar:active {
+  background-color: #005f85;
+  transform: scale(0.95);
+}
+
+/* Estilização do botão Fechar */
+.close-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: darkred;
+}

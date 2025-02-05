@@ -98,6 +98,8 @@ export const UsuarioListTable = ({ vetor, selecionar, closeModal }) => {
                     ? 'Administrador'
                     : usuario.role === 2
                     ? 'Vendedor'
+                    : usuario.role === 4
+                    ? 'Sisegg'
                     : 'Financeiro'}
                 </td>
                 <td>

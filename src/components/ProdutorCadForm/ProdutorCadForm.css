@@ -1,0 +1,86 @@
+.container-produtor {
+    width: auto;
+    height: auto;
+    background-color: #1d212e;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.356);
+    padding: 40px;
+    padding-bottom: 150px;
+    border-radius: 10px;
+    color: white;
+    overflow-y: auto;
+}
+
+/* Título */
+.container-produtor h1 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 60px;
+    color: white;
+    margin-top: 100px;
+}
+
+/* Ajuste geral dos inputs */
+.input-field-produtor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Inputs e Selects */
+.input-field-produtor input,
+.input-field-produtor select {
+    height: 35px;
+    border-radius: 8px;
+    border: 1px solid black;
+    padding-left: 10px;
+    width: 60%;
+}
+
+/* Alinhamento dos labels */
+.input-field-produtor label {
+    margin-bottom: 5px;
+}
+
+/* Linha inteira para nome, email e endereço */
+
+/* Organização em colunas de 3 */
+.row-produtor {
+    display: flex;
+    width: 60%;
+
+}
+
+/* Define que os campos menores ocupem até 3 colunas por linha */
+.row-produtor .input-field-produtor {
+    flex: 1;
+    
+}
+
+/* Botões no topo */
+.botoes-produtor {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.container-produtor button {
+    background-color: white;
+    border: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    width: 100px;
+    height: 35px;
+}
+
+.container-produtor button:hover {
+    background-color: aliceblue;
+}
+
+.disabled-button {
+    background-color: grey !important;
+    cursor: not-allowed !important;
+    opacity: 0.5;
+}

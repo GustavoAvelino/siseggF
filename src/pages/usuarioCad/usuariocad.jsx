@@ -1,75 +1,83 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import UsuarioCadForm from './../../components/UsuarioCadForm/UsuarioCadForm';
-import UsuarioListTable from './../../components/usuarioList/usuarioList';  // Import da tabela
-// Ajuste o caminho acima caso seja diferente no seu projeto
+import UsuarioListTable from './../../components/usuarioList/usuarioList';
 
 function UsuarioCad() {
-  // Objeto inicial do usuario
+  // Objeto inicial (quando não há usuário selecionado)
   const usuarioInicial = {
     id: '',
     nomeCom: '',
     email: '',
-    senha: '',
-    confSenha: '',
+    senha: '',       // Campo de senha digitada (nunca exibe o hash)
+    confSenha: '',   // Campo de confirmação de senha (se necessário)
     role: '',
-    corretoraId: '' // <-- Adicionamos para vincular a corretora
+    corretoraId: ''
   };
 
   const [objUsuario, setUsuario] = useState(usuarioInicial);
   const [usuarios, setUsuarios] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Ao montar, busca usuários já filtrando pela corretora do logado
+  // Carrega a lista de usuários ao montar
   useEffect(() => {
     fetchUsuarios();
   }, []);
 
-  // Função para buscar todos os usuários (filtrando pela corretora do usuário logado)
+  // Busca todos os usuários da corretora logada
   const fetchUsuarios = () => {
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    // Monta a URL de pesquisa incluindo corretoraId
-    const url = `http://localhost:8080/usuario/search?corretoraId=${userCorretoraId}`;
-
-    fetch(url)
-      .then(response => {
+    fetch(`http://localhost:8080/usuario/search?corretoraId=${userCorretoraId}`)
+      .then(async (response) => {
         if (!response.ok) {
-          // se vier 404, retorna lista vazia
-          return [];
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao buscar usuários");
         }
         return response.json();
       })
-      .then(data => setUsuarios(data))
+      .then((data) => setUsuarios(data))
       .catch((error) => {
         console.error("Erro ao buscar usuários:", error);
+        toast.error(error.message || "Erro ao buscar usuários");
       });
   };
 
-  // Função para lidar com a digitação nos campos
+  // Atualiza o estado de objUsuario quando o usuário digita nos inputs
   const digitar = (e) => {
     const { name, value } = e.target;
     setUsuario({ ...objUsuario, [name]: value });
   };
 
-  // Abre o modal e atualiza a lista de usuários
+  // Abre o modal para listar e selecionar usuários
   const openModal = () => {
+    // Atualiza a lista antes de abrir o modal, se desejar
     fetchUsuarios();
     setIsOpen(true);
   };
 
-  // Seleciona um usuário
+  // Seleciona um usuário para edição
   const selecionarUsuario = (id) => {
-    const usuarioSelecionado = usuarios.find((usuario) => usuario.id === id);
-    setUsuario(usuarioSelecionado);
-    setIsOpen(false); // Fecha o modal
+    const usuarioSelecionado = usuarios.find((u) => u.id === id);
+    if (!usuarioSelecionado) return;
+
+    // Importante: não atribuir a senha do back-end diretamente ao campo "senha".
+    // Se vier no objeto, zere para evitar sobrescrever a senha com hash.
+    const usuarioEdit = {
+      ...usuarioSelecionado,
+      senha: '',      // Mantém vazio para não sobrescrever
+      confSenha: ''   // Se houver confirmação
+    };
+
+    setUsuario(usuarioEdit);
+    setIsOpen(false);
   };
 
-  // Salvar um novo usuário
+  // Salva (cria) usuário
   const salvar = () => {
-    // 1) Pega a corretora do usuário logado
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    // 2) Monta objeto com corretora
     const usuarioParaSalvar = {
       ...objUsuario,
       corretoraId: userCorretoraId
@@ -83,28 +91,33 @@ function UsuarioCad() {
       },
       body: JSON.stringify(usuarioParaSalvar),
     })
-      .then(() => {
-        fetchUsuarios();
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao salvar usuário");
+        }
+        return response.text();  
       })
-      .then(() => {
+      .then((message) => {
+        toast.success(message || "Usuário salvo com sucesso!");
+        fetchUsuarios();
         limparFormulario();
       })
       .catch((error) => {
         console.error("Erro ao salvar o usuário:", error);
+        toast.error(error.message || "Erro ao salvar o usuário");
       });
   };
 
-  // Atualizar usuário
+  // Atualiza usuário
   const atualizar = () => {
     if (!objUsuario.id) {
-      alert("Selecione um usuário para editar.");
+      toast.warning("Selecione um usuário para editar.");
       return;
     }
 
-    // 1) Pega a corretora do usuário logado
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    // 2) Monta objeto para atualizar
     const usuarioParaAtualizar = {
       ...objUsuario,
       corretoraId: userCorretoraId
@@ -118,22 +131,28 @@ function UsuarioCad() {
       },
       body: JSON.stringify(usuarioParaAtualizar),
     })
-      .then(() => {
-        fetchUsuarios();
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao atualizar usuário");
+        }
+        return response.text();
       })
-      .then(() => {
-        alert("Usuário atualizado com sucesso!");
+      .then((message) => {
+        toast.success(message || "Usuário atualizado com sucesso!");
+        fetchUsuarios();
         limparFormulario();
       })
       .catch((error) => {
         console.error("Erro ao atualizar o usuário:", error);
+        toast.error(error.message || "Erro ao atualizar o usuário");
       });
   };
 
-  // Excluir usuário
+  // Exclui usuário
   const excluir = () => {
     if (!objUsuario.id) {
-      alert("Selecione um usuário para excluir.");
+      toast.warning("Selecione um usuário para excluir.");
       return;
     }
 
@@ -144,19 +163,25 @@ function UsuarioCad() {
         'accept': 'application/json',
       },
     })
-      .then(() => {
-        fetchUsuarios();
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage || "Erro ao excluir usuário");
+        }
+        return response.text();
       })
-      .then(() => {
-        alert("Usuário excluído com sucesso!");
+      .then((message) => {
+        toast.success(message || "Usuário excluído com sucesso!");
+        fetchUsuarios();
         limparFormulario();
       })
       .catch((error) => {
         console.error("Erro ao excluir o usuário:", error);
+        toast.error(error.message || "Erro ao excluir o usuário");
       });
   };
 
-  // Limpa o formulário
+  // Limpa o formulário (volta ao estado inicial)
   const limparFormulario = () => {
     setUsuario(usuarioInicial);
   };
@@ -166,10 +191,10 @@ function UsuarioCad() {
       <UsuarioCadForm
         eventoTeclado={digitar}
         salvar={salvar}
-        obj={objUsuario}
-        openModal={openModal}
         atualizar={atualizar}
         excluir={excluir}
+        obj={objUsuario}
+        openModal={openModal}
       />
 
       {isOpen && (

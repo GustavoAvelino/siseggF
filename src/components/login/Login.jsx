@@ -21,13 +21,14 @@ const Login = () => {
 
       // Extrai token, nomeCom e corretoraId
       console.log("Dados do login:", response.data); // DEBUG
-      const { token, nomeCom, corretoraId } = response.data;
+      const { token, nomeCom, corretoraId, role } = response.data;
       console.log("corretoraId:", corretoraId); // DEBUG
 
       // Armazena no localStorage
       localStorage.setItem("jwt", token);
       localStorage.setItem("username", nomeCom);
       localStorage.setItem("corretoraId", corretoraId || "");
+      localStorage.setItem("role", role);
 
       // Redireciona
       navigate("/");

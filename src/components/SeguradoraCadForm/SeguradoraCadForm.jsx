@@ -1,12 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import InputMask from 'react-input-mask';  
+import InputMask from 'react-input-mask';
+import { cnpj } from 'cpf-cnpj-validator';
 import './SeguradoraCadForm.css';
 
 export const SeguradoraCadForm = ({ eventoTeclado, salvar, obj, openModal, atualizar, excluir }) => {
- const [formValido, setFormValido] = useState(false);
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Envio de formulário de seguradora.");
+  const [formValido, setFormValido] = useState(false);
+  const [erroCnpj, setErroCnpj] = useState('');
+
+  useEffect(() => {
+    validarFormulario();
+  }, [obj]);
+
+  const validarFormulario = () => {
+    if (
+      obj.nome &&
+      obj.nomefan &&
+      obj.email &&
+      obj.cnpj &&
+      obj.telefone &&
+      obj.susep &&
+      obj.impSeguradora &&
+      validarCnpj(obj.cnpj)
+    ) {
+      setFormValido(true);
+    } else {
+      setFormValido(false);
+    }
+  };
+
+  const validarCnpj = (valor) => {
+    const numero = valor.replace(/\D/g, ''); // Remove caracteres não numéricos
+
+    if (!cnpj.isValid(numero)) {
+      setErroCnpj('CNPJ inválido.');
+      return false;
+    }
+
+    setErroCnpj('');
+    return true;
+  };
+
+  const handleBlurCnpj = (event) => {
+    const valor = event.target.value.replace(/\D/g, ''); // Apenas valida, sem formatar novamente
+    validarCnpj(valor);
+    validarFormulario();
   };
 
   const handleKeyDown = (event) => {
@@ -20,30 +57,10 @@ export const SeguradoraCadForm = ({ eventoTeclado, salvar, obj, openModal, atual
     }
   };
 
-  useEffect(() => {
-      validarFormulario();
-    }, [obj]);
-  
-    const validarFormulario = () => {
-      if (
-        obj.nome &&
-        obj.nomefan &&
-        obj.email &&
-        obj.cnpj &&
-        obj.telefone &&
-        obj.susep &&
-        obj.impSeguradora
-      ) {
-        setFormValido(true);
-      } else {
-        setFormValido(false);
-      }
-    };
-
   return (
     <div className="container-seguradora">
       <div className="botoes-seguradora">
-      <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
+        <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
           Salvar
         </button>
         {obj.id && <button onClick={atualizar}>Editar</button>}
@@ -51,115 +68,50 @@ export const SeguradoraCadForm = ({ eventoTeclado, salvar, obj, openModal, atual
         <button onClick={openModal}>Consultar</button>
       </div>
       <h1 id='title-seguradora'>Seguradora</h1>
-      <form onSubmit={handleSubmit}>
-        {/* Campo: Nome */}
+      <form onSubmit={(event) => event.preventDefault()}>
         <div className="input-field-seguradora">
           <label htmlFor="nomeSeg">Nome:</label><br />
-          <input
-            type="text"
-            id="nomeSeg"
-            name="nome"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            value={obj.nome}
-            required
-          />
+          <input type="text" id="nomeSeg" name="nome" onKeyDown={handleKeyDown} onChange={eventoTeclado} value={obj.nome} required />
         </div>
 
-        {/* Campo: Nome Fantasia */}
         <div className="input-field-seguradora">
           <label htmlFor="nomeFanSeg">Nome Fantasia:</label><br />
-          <input
-            type="text"
-            id="nomeFanSeg"
-            name="nomefan"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            value={obj.nomefan}
-            required
-          />
+          <input type="text" id="nomeFanSeg" name="nomefan" onKeyDown={handleKeyDown} onChange={eventoTeclado} value={obj.nomefan} required />
         </div>
 
-        {/* Campo: E-mail */}
         <div className="input-field-seguradora">
           <label htmlFor="emailSeg">E-mail:</label><br />
-          <input
-            type="email"
-            id="emailSeg"
-            name="email"
-            onKeyDown={handleKeyDown}
-            onChange={eventoTeclado}
-            value={obj.email}
-            required
-          />
+          <input type="email" id="emailSeg" name="email" onKeyDown={handleKeyDown} onChange={eventoTeclado} value={obj.email} required />
         </div>
 
-        {/* Linha com CNPJ, Telefone, SUSEP e Imposto */}
         <div className="row-seg">
-          <div className="input-field-seguradora" id="cnpjSeg">
-            <label htmlFor="cnpj">CNPJ:</label><br />
-            <InputMask
-              mask="99.999.999/9999-99"
-              value={obj.cnpj}
-              onChange={eventoTeclado}
-              onKeyDown={handleKeyDown}
-            >
+          <div className="input-field-seguradora">
+            <label htmlFor="cnpjSeg">CNPJ:</label><br />
+            <InputMask mask="99.999.999/9999-99" value={obj.cnpj} onBlur={handleBlurCnpj} onChange={eventoTeclado} onKeyDown={handleKeyDown}>
               {(inputProps) => (
-                <input
-                  {...inputProps}
-                  type="text"
-                  id="cnpjSeg"
-                  name="cnpj"
-                  required
-                />
+                <input {...inputProps} type="text" id="cnpjSeg" name="cnpj" required />
               )}
             </InputMask>
+            {erroCnpj && <span className="erro-texto">{erroCnpj}</span>}
           </div>
 
-          <div className="input-field-seguradora" id="telefoneSeg">
-            <label htmlFor="telefone">Telefone:</label><br />
-            <InputMask
-              mask="(99) 99999-9999"
-              value={obj.telefone}
-              onChange={eventoTeclado}
-              onKeyDown={handleKeyDown}
-            >
+          <div className="input-field-seguradora">
+            <label htmlFor="telefoneSeg">Telefone:</label><br />
+            <InputMask mask="(99) 99999-9999" value={obj.telefone} onChange={eventoTeclado} onKeyDown={handleKeyDown}>
               {(inputProps) => (
-                <input
-                  {...inputProps}
-                  type="text"
-                  id="telefoneSeg"
-                  name="telefone"
-                  required
-                />
+                <input {...inputProps} type="text" id="telefoneSeg" name="telefone" required />
               )}
             </InputMask>
           </div>
 
           <div className="input-field-seguradora">
             <label htmlFor="susepSeg">SUSEP:</label><br />
-            <input
-              type="text"
-              id="susepSeg"
-              name="susep"
-              onKeyDown={handleKeyDown}
-              onChange={eventoTeclado}
-              value={obj.susep}
-              required
-            />
+            <input type="text" id="susepSeg" name="susep" onKeyDown={handleKeyDown} onChange={eventoTeclado} value={obj.susep} required />
           </div>
 
           <div className="input-field-seguradora">
             <label htmlFor="impostoSeg">Imposto:</label><br />
-            <input
-              type="number"
-              id="impostoSeg"
-              name="impSeguradora"
-              onKeyDown={handleKeyDown}
-              onChange={eventoTeclado}
-              value={obj.impSeguradora}
-              required
-            />
+            <input type="number" id="impostoSeg" name="impSeguradora" onKeyDown={handleKeyDown} onChange={eventoTeclado} value={obj.impSeguradora} required />
           </div>
         </div>
       </form>
