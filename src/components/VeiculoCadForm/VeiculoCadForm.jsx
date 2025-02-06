@@ -1,19 +1,27 @@
 import React, { useEffect } from 'react';
 import styles from './VeiculoCadForm.css'; // Ajuste se tiver CSS
 
-export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
+export const VeiculoCadForm = ({ eventoTeclado, veiculo, onPlacaEnter, loading }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // O salvamento e atualização ocorrem no componente pai
   };
 
+  // Lógica para interceptar Enter
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      event.preventDefault(); // Evita o comportamento padrão de submit
-      const form = event.target.form;
-      const index = Array.prototype.indexOf.call(form, event.target);
-      if (form.elements[index + 1]) {
-        form.elements[index + 1].focus();
+      event.preventDefault(); // Evita submit automático do form
+
+      // Se for o campo "placa", chamamos a função que consulta a API
+      if (event.target.name === 'placa') {
+        onPlacaEnter(event.target.value);
+      } else {
+        // Caso queira pular para o próximo campo
+        const form = event.target.form;
+        const index = Array.prototype.indexOf.call(form, event.target);
+        if (form.elements[index + 1]) {
+          form.elements[index + 1].focus();
+        }
       }
     }
   };
@@ -25,8 +33,6 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
       firstInput.focus();
     }
   }, []);
-
-  
 
   return (
     <form onSubmit={handleSubmit} className="form-veiculo">
@@ -41,6 +47,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.placa}
             required
+            disabled={loading}
           />
         </div>
 
@@ -54,6 +61,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.codigoFipe}
             required
+            disabled={loading}
           />
         </div>
 
@@ -67,6 +75,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.marca}
             required
+            disabled={loading}
           />
         </div>
 
@@ -80,6 +89,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.modelo}
             required
+            disabled={loading}
           />
         </div>
 
@@ -93,6 +103,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.anoModelo}
             required
+            disabled={loading}
           />
         </div>
 
@@ -106,6 +117,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.anoFabricacao}
             required
+            disabled={loading}
           />
         </div>
 
@@ -119,6 +131,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.valorFipe}
             required
+            disabled={loading}
           />
         </div>
 
@@ -132,6 +145,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.combustivel}
             required
+            disabled={loading}
           />
         </div>
 
@@ -145,6 +159,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.chassi}
             required
+            disabled={loading}
           />
         </div>
 
@@ -158,6 +173,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onKeyDown={handleKeyDown}
             value={veiculo.passageiros}
             required
+            disabled={loading}
           />
         </div>
 
@@ -169,6 +185,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onChange={eventoTeclado}
             onKeyDown={handleKeyDown}
             value={veiculo.financiado}
+            disabled={loading}
           >
             <option value="false">Não</option>
             <option value="true">Sim</option>
@@ -183,6 +200,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onChange={eventoTeclado}
             onKeyDown={handleKeyDown}
             value={veiculo.chassiRemarcado}
+            disabled={loading}
           >
             <option value="false">Não</option>
             <option value="true">Sim</option>
@@ -197,6 +215,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onChange={eventoTeclado}
             onKeyDown={handleKeyDown}
             value={veiculo.kitGas}
+            disabled={loading}
           >
             <option value="false">Não</option>
             <option value="true">Sim</option>
@@ -211,6 +230,7 @@ export const VeiculoCadForm = ({ eventoTeclado, veiculo }) => {
             onChange={eventoTeclado}
             onKeyDown={handleKeyDown}
             value={veiculo.plotadoOuAdesivado}
+            disabled={loading}
           >
             <option value="false">Não</option>
             <option value="true">Sim</option>

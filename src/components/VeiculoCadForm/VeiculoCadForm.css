@@ -89,3 +89,37 @@
 .botoes button:hover {
   background-color: aliceblue;
 }
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* acima do modal */
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* cor de fundo */
+  border-top: 8px solid #3498db; /* cor da animação */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+/* Animação do spinner */
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Se quiser desabilitar clicks e inputs */
+.disabled-form {
+  pointer-events: none; /* Desabilita clique */
+  opacity: 0.7; /* Visualmente mais clara */
+}

@@ -29,6 +29,9 @@ function VeiculoCad({ cliente, closeModal }) {
   const [veiculos, setVeiculos] = useState([]);
   const [isOpenVeiculoList, setIsOpenVeiculoList] = useState(false);
 
+  // Novo state de loading
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (cliente && cliente.id) {
       fetchVeiculos(cliente.id);
@@ -36,8 +39,10 @@ function VeiculoCad({ cliente, closeModal }) {
   }, [cliente]);
 
   const fetchVeiculos = (clienteId) => {
+    setLoading(true);
     fetch(`http://localhost:8080/veiculo/search?clienteId=${clienteId}`)
       .then(async (response) => {
+        setLoading(false);
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(errorMessage || 'Erro ao buscar veículos');
@@ -53,6 +58,48 @@ function VeiculoCad({ cliente, closeModal }) {
       });
   };
 
+  // -----------------------------------------------------
+  // BUSCA OS DADOS AUTOMATICAMENTE AO DIGITAR A PLACA
+  // -----------------------------------------------------
+  const consultarPlaca = (placaValue) => {
+    if (!placaValue) return;
+    setLoading(true);
+    const url = `http://localhost:8080/veiculo/consulta-placa-detalhada/${placaValue}`;
+
+    fetch(url)
+      .then(async (res) => {
+        setLoading(false);
+        if (!res.ok) {
+          const msgErro = await res.text();
+          throw new Error(msgErro || 'Erro ao consultar placa');
+        }
+        return res.json(); // Este deve retornar o DTO com dados
+      })
+      .then((data) => {
+        // Ajustar conforme PlacaResponseDTO
+        setVeiculo((prev) => ({
+          ...prev,
+          placa: data.placa || '',
+          codigoFipe: data.codigoFipe || '',
+          marca: data.marca || '',
+          modelo: data.modelo || '',
+          anoModelo: data.anoModelo || '',
+          anoFabricacao: data.ano || '', // Se a API retornou "ano" como ano de fabricação
+          valorFipe: data.valorFipe || '',
+          combustivel: data.combustivel || '',
+          chassi: data.chassiCompleto || '', 
+          passageiros: data.passageiros || '',
+        }));
+
+        toast.success('Dados da placa carregados com sucesso!');
+      })
+      .catch((error) => {
+        console.error('Erro ao consultar placa:', error);
+        toast.error(error.message || 'Erro ao consultar placa');
+      });
+  };
+
+  // Captura evento de teclado no form
   const handleEventoTeclado = (e) => {
     const { name, value } = e.target;
     setVeiculo((prev) => ({
@@ -61,7 +108,11 @@ function VeiculoCad({ cliente, closeModal }) {
     }));
   };
 
+  // -----------------------------------------------------
+  // SALVAR
+  // -----------------------------------------------------
   const salvar = () => {
+    setLoading(true);
     const payload = {
       ...veiculo,
       financiado: veiculo.financiado === 'true',
@@ -76,13 +127,13 @@ function VeiculoCad({ cliente, closeModal }) {
       body: JSON.stringify(payload),
     })
       .then(async (response) => {
+        setLoading(false);
+        // Evite chamar .json() aqui, pois pode não haver body
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(errorMessage || 'Erro ao salvar veículo');
         }
-        return response.json();
-      })
-      .then(() => {
+        // Se chegar aqui, deu tudo certo
         toast.success('Veículo salvo com sucesso!');
         if (cliente && cliente.id) fetchVeiculos(cliente.id);
         limparFormulario();
@@ -93,19 +144,23 @@ function VeiculoCad({ cliente, closeModal }) {
       });
   };
 
+  // -----------------------------------------------------
+  // ATUALIZAR
+  // -----------------------------------------------------
   const atualizar = () => {
     if (!veiculo.id) {
       toast.warning('Selecione um veículo para editar.');
       return;
     }
 
+    setLoading(true);
     const payload = {
       ...veiculo,
       financiado: veiculo.financiado === 'true',
       chassiRemarcado: veiculo.chassiRemarcado === 'true',
       kitGas: veiculo.kitGas === 'true',
       plotadoOuAdesivado: veiculo.plotadoOuAdesivado === 'true',
-      clienteId: veiculo.clienteId
+      clienteId: veiculo.clienteId,
     };
 
     fetch(`http://localhost:8080/veiculo/update/${veiculo.id}`, {
@@ -114,13 +169,12 @@ function VeiculoCad({ cliente, closeModal }) {
       body: JSON.stringify(payload),
     })
       .then(async (response) => {
+        setLoading(false);
+        // Possível que seu endpoint PUT não retorne JSON 
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(errorMessage || 'Erro ao atualizar veículo');
         }
-        return response.json();
-      })
-      .then(() => {
         toast.success('Veículo atualizado com sucesso!');
         if (cliente && cliente.id) fetchVeiculos(cliente.id);
         limparFormulario();
@@ -131,23 +185,26 @@ function VeiculoCad({ cliente, closeModal }) {
       });
   };
 
+  // -----------------------------------------------------
+  // EXCLUIR
+  // -----------------------------------------------------
   const excluir = () => {
     if (!veiculo.id) {
       toast.warning('Selecione um veículo para excluir.');
       return;
     }
 
+    setLoading(true);
     fetch(`http://localhost:8080/veiculo/delete/${veiculo.id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })
       .then(async (response) => {
+        setLoading(false);
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(errorMessage || 'Erro ao excluir veículo');
         }
-      })
-      .then(() => {
         toast.success('Veículo excluído com sucesso!');
         setVeiculos((prev) => prev.filter((v) => v.id !== veiculo.id));
         limparFormulario();
@@ -174,7 +231,7 @@ function VeiculoCad({ cliente, closeModal }) {
         chassiRemarcado: veiculoSelecionado.chassiRemarcado ? 'true' : 'false',
         kitGas: veiculoSelecionado.kitGas ? 'true' : 'false',
         plotadoOuAdesivado: veiculoSelecionado.plotadoOuAdesivado ? 'true' : 'false',
-        clienteId: veiculoSelecionado.cliente?.id || ''
+        clienteId: veiculoSelecionado.cliente?.id || '',
       });
     }
     closeVeiculoList();
@@ -182,19 +239,33 @@ function VeiculoCad({ cliente, closeModal }) {
 
   return (
     <div className="modal-container">
-      <div className="modal-overlay" onClick={closeModal}></div>
-      <div className="modal-content">
-        <div className="botoes">
-          <button onClick={salvar}>Salvar</button>
-          {veiculo.id && <button onClick={atualizar}>Editar</button>}
-          {veiculo.id && <button onClick={excluir}>Excluir</button>}
-          <button onClick={openVeiculoList}>Consultar</button>
-          {!veiculo.id && <button onClick={limparFormulario}>Limpar</button>}
+      {/* Se quiser um overlay extra para loading */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <p style={{ color: '#fff' }}>Carregando...</p>
         </div>
-        <button id="closeveiculos" onClick={closeModal}>X</button>
+      )}
+
+      <div className="modal-overlay" onClick={closeModal}></div>
+
+      <div className={`modal-content ${loading ? 'disabled-form' : ''}`}>
+        <div className="botoes">
+          <button onClick={salvar} disabled={loading}>Salvar</button>
+          {veiculo.id && <button onClick={atualizar} disabled={loading}>Editar</button>}
+          {veiculo.id && <button onClick={excluir} disabled={loading}>Excluir</button>}
+          <button onClick={openVeiculoList} disabled={loading}>Consultar</button>
+          {!veiculo.id && <button onClick={limparFormulario} disabled={loading}>Limpar</button>}
+        </div>
+        <button id="closeveiculos" onClick={closeModal} disabled={loading}>X</button>
         <h1 id="title-veiculo">Cadastro de Veículo</h1>
 
-        <VeiculoCadForm eventoTeclado={handleEventoTeclado} veiculo={veiculo} />
+        <VeiculoCadForm
+          eventoTeclado={handleEventoTeclado}
+          veiculo={veiculo}
+          onPlacaEnter={consultarPlaca}
+          loading={loading} // se quiser desabilitar inputs
+        />
 
         {isOpenVeiculoList && (
           <VeiculoListTable
