@@ -1,0 +1,59 @@
+.contas-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #1d212e;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  }
+  
+  .contas-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .contas-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .contas-table th,
+  .contas-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #2a2b2e;
+  }
+  
+  .contas-table th {
+    background-color: #252527;
+  }
+  
+  .contas-table tr:nth-child(even) {
+    background-color: #2a2b2e;
+  }
+  
+  .contas-table tr:hover {
+    background-color: #32343a;
+  }
+  
+  .contas-table button {
+    background-color: #008cba;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .contas-table button:hover {
+    background-color: #0073a7;
+  }
+  
+  .error {
+    color: red;
+    text-align: center;
+  }
+  

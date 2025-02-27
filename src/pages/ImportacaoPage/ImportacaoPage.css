@@ -1,0 +1,49 @@
+/* CSS para a Tela de Importação */
+.importacao-container {
+    padding: 40px;
+    border-radius: 10px;
+    background-color: #1d212e;
+    color: #ffffff;
+    max-width: 800px;
+    margin: 20px auto;
+  }
+  
+  .importacao-title {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 30px;
+    color: #ffffff;
+  }
+  
+  .importacao-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+  
+  .importacao-file-input {
+    width: 100%;
+    max-width: 400px;
+    height: 35px;
+    border-radius: 12px;
+    border: 1px solid #000;
+    padding: 0 10px;
+    background-color: #fff;
+    color: #000;
+  }
+  
+  .importacao-button {
+    background-color: #fff;
+    border: none;
+    border-radius: 40px;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .importacao-button:hover {
+    background-color: aliceblue;
+  }
+  

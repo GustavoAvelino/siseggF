@@ -1,0 +1,135 @@
+.multicalculo-cad-container {
+  background-color: #1d212e;
+  color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+}
+
+.multicalculo-cad-container h1 {
+  color: #fff;
+}
+
+.multicalculo-cad-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.step-content {
+  margin-bottom: 20px;
+}
+
+/* Campo-linha geral */
+.campo-linha {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+
+.campo-linha label {
+  margin-bottom: 5px;
+}
+
+.campo-linha input,
+.campo-linha select {
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  color: #000;
+  padding-left: 8px;
+}
+
+/* Para checkbox */
+.campo-linha-menor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/* 2 colunas para o perfil de risco */
+.duas-colunas {
+  display: flex;
+  gap: 40px;
+}
+
+.coluna {
+  flex: 1;
+}
+
+.navegacao-botoes {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.navegacao-botoes button {
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  width: 100px;
+  height: 35px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.navegacao-botoes button:hover {
+  background-color: aliceblue;
+}
+
+/* Cliente combobox + botão de novo ao lado */
+.campo-linha-cliente {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+.campo-linha-cliente button{
+  margin-top: 20px;
+}
+
+.bloco-cliente {
+  display: flex;
+  flex-direction: column;
+  
+}
+.bloco-cliente select{
+  
+  width: 100%;
+}
+.data-vigencia{
+  width: 40%;
+}
+
+.btn-novo {
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  width: 110px;
+  height: 35px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-novo:hover {
+  background-color: aliceblue;
+}
+
+/* Veículos */
+.veiculo-list-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.veiculo-disponiveis-list,
+.veiculo-selecionados-list {
+  margin-top: 20px;
+}
+
+.veiculo-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
+}

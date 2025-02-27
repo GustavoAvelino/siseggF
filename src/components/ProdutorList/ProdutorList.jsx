@@ -15,17 +15,19 @@ export const ProdutorList = ({ vetor, selecionar, closeModal }) => {
   }, [vetor]);
 
   const handlePesquisa = () => {
-    let query = '?';
-    if (idPesquisa) query += `id=${idPesquisa}&`;
-    if (nomePesquisa) query += `nome=${nomePesquisa}&`;
-    if (cpfPesquisa) query += `cpf=${cpfPesquisa}&`;
-    if (cnpjPesquisa) query += `cnpj=${cnpjPesquisa}&`;
-
-    fetch(`http://localhost:8080/produtor/search${query}`)
+    const corretoraId = localStorage.getItem("corretoraId") || ""; // Obtém a corretora do usuário logado
+    let query = `?corretoraId=${corretoraId}`; // Sempre inclui a corretoraId na pesquisa
+  
+    if (idPesquisa) query += `&id=${idPesquisa}`;
+    if (nomePesquisa) query += `&nome=${nomePesquisa}`;
+    if (cpfPesquisa) query += `&cpf=${cpfPesquisa}`;
+    if (cnpjPesquisa) query += `&cnpj=${cnpjPesquisa}`;
+  
+    fetch(`http://82.29.59.62:9090/produtor/search${query}`)
       .then(async (response) => {
         if (!response.ok) {
           const errorMessage = await response.text();
-          toast.error(errorMessage || 'Erro ao pesquisar produtores');
+          toast.error(errorMessage || "Erro ao pesquisar produtores");
           setProdutores([]);
           return [];
         }
@@ -37,10 +39,12 @@ export const ProdutorList = ({ vetor, selecionar, closeModal }) => {
         }
       })
       .catch(error => {
-        console.error('Erro ao buscar produtores:', error);
-        toast.error('Erro inesperado ao buscar produtores');
+        console.error("Erro ao buscar produtores:", error);
+        toast.error("Erro inesperado ao buscar produtores");
       });
   };
+  
+  
 
   return (
     <div className="produtorListCont">

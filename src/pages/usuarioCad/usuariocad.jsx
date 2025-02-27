@@ -29,7 +29,7 @@ function UsuarioCad() {
   const fetchUsuarios = () => {
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    fetch(`http://localhost:8080/usuario/search?corretoraId=${userCorretoraId}`)
+    fetch(`http://82.29.59.62:9090/usuario/search?corretoraId=${userCorretoraId}`)
       .then(async (response) => {
         if (!response.ok) {
           const errorMessage = await response.text();
@@ -83,7 +83,7 @@ function UsuarioCad() {
       corretoraId: userCorretoraId
     };
 
-    fetch('http://localhost:8080/usuario/save', {
+    fetch('http://82.29.59.62:9090/usuario/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ function UsuarioCad() {
       corretoraId: userCorretoraId
     };
 
-    fetch(`http://localhost:8080/usuario/update/${objUsuario.id}`, {
+    fetch(`http://82.29.59.62:9090/usuario/update/${objUsuario.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -156,7 +156,7 @@ function UsuarioCad() {
       return;
     }
 
-    fetch(`http://localhost:8080/usuario/delete/${objUsuario.id}`, {
+    fetch(`http://82.29.59.62:9090/usuario/delete/${objUsuario.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

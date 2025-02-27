@@ -40,7 +40,7 @@ function VeiculoCad({ cliente, closeModal }) {
 
   const fetchVeiculos = (clienteId) => {
     setLoading(true);
-    fetch(`http://localhost:8080/veiculo/search?clienteId=${clienteId}`)
+    fetch(`http://82.29.59.62:9090/veiculo/search?clienteId=${clienteId}`)
       .then(async (response) => {
         setLoading(false);
         if (!response.ok) {
@@ -64,7 +64,7 @@ function VeiculoCad({ cliente, closeModal }) {
   const consultarPlaca = (placaValue) => {
     if (!placaValue) return;
     setLoading(true);
-    const url = `http://localhost:8080/veiculo/consulta-placa-detalhada/${placaValue}`;
+    const url = `http://82.29.59.62:9090/veiculo/consulta-placa-detalhada/${placaValue}`;
 
     fetch(url)
       .then(async (res) => {
@@ -121,7 +121,7 @@ function VeiculoCad({ cliente, closeModal }) {
       plotadoOuAdesivado: veiculo.plotadoOuAdesivado === 'true',
     };
 
-    fetch('http://localhost:8080/veiculo/save', {
+    fetch('http://82.29.59.62:9090/veiculo/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -163,7 +163,7 @@ function VeiculoCad({ cliente, closeModal }) {
       clienteId: veiculo.clienteId,
     };
 
-    fetch(`http://localhost:8080/veiculo/update/${veiculo.id}`, {
+    fetch(`http://82.29.59.62:9090/veiculo/update/${veiculo.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -195,7 +195,7 @@ function VeiculoCad({ cliente, closeModal }) {
     }
 
     setLoading(true);
-    fetch(`http://localhost:8080/veiculo/delete/${veiculo.id}`, {
+    fetch(`http://82.29.59.62:9090/veiculo/delete/${veiculo.id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })

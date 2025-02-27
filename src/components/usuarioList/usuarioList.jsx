@@ -30,7 +30,7 @@ export const UsuarioListTable = ({ vetor, selecionar, closeModal }) => {
 
     // Exemplo final de URL: /usuario/search?id=3&corretoraId=10
     // ou /usuario/search?nomeCom=joao&corretoraId=10
-    fetch(`http://localhost:8080/usuario/search${query}`)
+    fetch(`http://82.29.59.62:9090/usuario/search${query}`)
       .then(response => {
         if (!response.ok) {
           // se vier 404 (NOT_FOUND), zera a lista

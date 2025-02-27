@@ -45,8 +45,7 @@ const ProdutorCadForm = ({ eventoTeclado, salvar, obj, atualizar, excluir, openM
       obj.formaRepasse &&
       obj.cpf &&
       obj.telefone &&
-      validarCpf(obj.cpf) &&
-      validarCnpj(obj.cnpj)
+      validarCpf(obj.cpf) 
     ) {
       setFormValido(true);
     } else {
@@ -70,7 +69,7 @@ const ProdutorCadForm = ({ eventoTeclado, salvar, obj, atualizar, excluir, openM
         <button onClick={salvar} disabled={!formValido} className={!formValido ? 'disabled-button' : ''}>
           Salvar
         </button>
-        {obj.id && <button onClick={atualizar}>Atualizar</button>}
+        {obj.id && <button onClick={atualizar}>Editar</button>}
         {obj.id && <button onClick={excluir}>Excluir</button>}
         <button onClick={openModal}>Consultar</button>
       </div>
@@ -166,7 +165,7 @@ const ProdutorCadForm = ({ eventoTeclado, salvar, obj, atualizar, excluir, openM
               <option value="">Selecione</option>
               <option value="Premio Liquido">Prêmio Líquido</option>
               <option value="Comissao Corretora">Comissão Corretora</option>
-              <option value="Valor Fixo">Valor Fixo</option>
+          
             </select>
           </div>
 
@@ -174,7 +173,6 @@ const ProdutorCadForm = ({ eventoTeclado, salvar, obj, atualizar, excluir, openM
             <label>Forma de Repasse:</label>
             <select name="formaRepasse" onKeyDown={handleKeyDown} onChange={eventoTeclado} value={obj.formaRepasse} required>
               <option value="">Selecione</option>
-              <option value="No Recebimento">No Recebimento</option>
               <option value="Antecipado 1 Parcela">Antecipado 1ª Parcela</option>
               <option value="Antecipado na Parcela">Antecipado na Parcela</option>
               <option value="Antecipado Emissão da Apólice">Antecipado Emissão da Apólice</option>

@@ -1,0 +1,88 @@
+.BaixaParcelaListModal {
+    position: fixed;
+    background-color: aliceblue;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 20px;
+  }
+  
+  .BaixaParcelaTable,
+  .BaixaParcelaTable tr,
+  .BaixaParcelaTable td,
+  .BaixaParcelaTable th {
+    border: 1px solid;
+    height: 50px;
+  }
+  
+  .BaixaParcelaTable {
+    background-color: aliceblue;
+    width: 100%;
+    border-collapse: collapse;
+    color: #000;
+  }
+  
+  .BaixaParcelaTable th,
+  .BaixaParcelaTable td {
+    text-align: center;
+    padding: 5px;
+  }
+  
+  .BaixaParcelaTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .BaixaParcelaTable tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .BaixaParcelaPesquisa th {
+    border: none;
+    padding: 10px;
+    justify-items: baseline;
+  }
+  
+  .BaixaParcelaPesquisa input {
+    padding: 5px;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .BaixaParcelaPesquisa button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .BaixaParcelaPesquisa button:hover {
+    background-color: #0056b3;
+  }
+  
+  .comboboxCP {
+    width: 90%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    color: #333;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  
+  .comboboxCP:focus {
+    border-color: #00c3ff;
+    outline: none;
+  }
+  

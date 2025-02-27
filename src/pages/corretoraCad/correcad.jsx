@@ -26,7 +26,7 @@ function CorretoraCad() {
   const [isOpen, setIsOpen] = useState(false);
 
   const fetchCorretoras = () => {
-    fetch('http://localhost:8080/corretora')
+    fetch('http://82.29.59.62:9090/corretora')
       .then(async (response) => {
         if (!response.ok) {
           const errorMessage = await response.text();
@@ -115,7 +115,7 @@ function CorretoraCad() {
       impCorretora: objCorretora.impCorretora
     };
 
-    fetch('http://localhost:8080/corretora/save', {
+    fetch('http://82.29.59.62:9090/corretora/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ function CorretoraCad() {
       impCorretora: objCorretora.impCorretora
     };
 
-    fetch(`http://localhost:8080/corretora/update/${objCorretora.id}`, {
+    fetch(`http://82.29.59.62:9090/corretora/update/${objCorretora.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ function CorretoraCad() {
       return;
     }
 
-    fetch(`http://localhost:8080/corretora/delete/${objCorretora.id}`, {
+    fetch(`http://82.29.59.62:9090/corretora/delete/${objCorretora.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

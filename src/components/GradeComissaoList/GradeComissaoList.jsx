@@ -18,7 +18,7 @@ export const GradeComissaoList = ({ selecionar, closeModal }) => {
       return;
     }
 
-    fetch(`http://localhost:8080/grade-comissao/${corretoraId}`)
+    fetch(`http://82.29.59.62:9090/grade-comissao/${corretoraId}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Erro ao buscar grades.");

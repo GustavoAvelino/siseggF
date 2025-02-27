@@ -20,7 +20,7 @@ export const VeiculoListTable = ({ vetor, selecionar, closeModal, clienteId }) =
       query += `&modelo=${modeloPesquisa}`;
     }
 
-    fetch(`http://localhost:8080/veiculo/search${query}`)
+    fetch(`http://82.29.59.62:9090/veiculo/search${query}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Erro ao buscar veículos');

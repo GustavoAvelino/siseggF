@@ -18,7 +18,8 @@ function ProdutorCad() {
     imposto: '',
     repasse: '',
     repasseSobre: '',
-    formaRepasse: ''
+    formaRepasse: '',
+    corretoraId: '' 
   };
 
   const [objProdutor, setProdutor] = useState(produtorInicial);
@@ -30,7 +31,9 @@ function ProdutorCad() {
   }, []);
 
   const fetchProdutores = () => {
-    fetch(`http://localhost:8080/produtor`)
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+    const url = `http://82.29.59.62:9090/produtor/search?corretoraId=${userCorretoraId}`
+    fetch(url)
       .then(async response => {
         if (!response.ok) {
           const errorMessage = await response.text();
@@ -56,27 +59,31 @@ function ProdutorCad() {
   };
 
   const salvar = () => {
-    fetch('http://localhost:8080/produtor/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(objProdutor),
+    const userCorretoraId = localStorage.getItem('corretoraId') || '';
+    const produtorParaSalvar = { ...objProdutor, corretoraId: userCorretoraId };
+
+    fetch('http://82.29.59.62:9090/produtor/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(produtorParaSalvar), // Alterado para enviar a corretora correta
     })
-      .then(response => {
+    .then(response => {
         if (!response.ok) throw new Error('Erro ao salvar produtor');
         return response.text();
-      })
-      .then(() => {
+    })
+    .then(() => {
         toast.success('Produtor salvo com sucesso!');
         fetchProdutores();
         setProdutor(produtorInicial);
-      })
-      .catch(() => {
+    })
+    .catch(() => {
         toast.error('Erro ao salvar produtor');
-      });
-  };
+    });
+};
+
 
   const atualizar = () => {
-    fetch(`http://localhost:8080/produtor/update/${objProdutor.id}`, {
+    fetch(`http://82.29.59.62:9090/produtor/update/${objProdutor.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(objProdutor),
@@ -96,7 +103,7 @@ function ProdutorCad() {
   };
 
   const excluir = () => {
-    fetch(`http://localhost:8080/produtor/delete/${objProdutor.id}`, { method: 'DELETE' })
+    fetch(`http://82.29.59.62:9090/produtor/delete/${objProdutor.id}`, { method: 'DELETE' })
       .then(response => {
         if (!response.ok) throw new Error('Erro ao excluir produtor');
         return response.text();

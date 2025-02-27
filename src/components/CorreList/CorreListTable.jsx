@@ -19,7 +19,7 @@ export const CorreListTable = ({ vetor, selecionar, closeModal }) => {
     }
 
     if (query) {
-      fetch(`http://localhost:8080/corretora/search${query}`)
+      fetch(`http://82.29.59.62:9090/corretora/search${query}`)
         .then((response) => {
           if (response.ok) {
             return response.json();

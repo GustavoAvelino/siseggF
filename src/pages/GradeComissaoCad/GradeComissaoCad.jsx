@@ -31,7 +31,7 @@ function GradeComissaoCad() {
   const fetchGrades = () => {
     if (!corretoraId) return;
 
-    fetch(`http://localhost:8080/grade-comissao/${corretoraId}`)
+    fetch(`http://82.29.59.62:9090/grade-comissao/${corretoraId}`)
       .then(async (res) => {
         if (!res.ok) {
           const errorMessage = await res.text();
@@ -67,7 +67,7 @@ function GradeComissaoCad() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/grade-comissao/parcelas/${id}`
+        `http://82.29.59.62:9090/grade-comissao/parcelas/${id}`
       );
       if (!response.ok) throw new Error("Erro ao buscar parcelas.");
 
@@ -97,7 +97,7 @@ function GradeComissaoCad() {
       corretoraId,
     };
 
-    fetch("http://localhost:8080/grade-comissao/salvar", {
+    fetch("http://82.29.59.62:9090/grade-comissao/salvar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(gradeParaSalvar),
@@ -128,7 +128,7 @@ function GradeComissaoCad() {
       corretoraId,
     };
 
-    fetch(`http://localhost:8080/grade-comissao/atualizar/${grade.id}`, {
+    fetch(`http://82.29.59.62:9090/grade-comissao/atualizar/${grade.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(gradeParaAtualizar),
@@ -154,7 +154,7 @@ function GradeComissaoCad() {
       return;
     }
 
-    fetch(`http://localhost:8080/grade-comissao/deletar/${grade.id}`, {
+    fetch(`http://82.29.59.62:9090/grade-comissao/deletar/${grade.id}`, {
       method: "DELETE",
     })
       .then(async (res) => {

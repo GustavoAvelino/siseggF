@@ -31,7 +31,7 @@ export const ClienteList = ({ vetor, selecionar, closeModal }) => {
     }
     query += `corretoraId=${userCorretoraId}`;
 
-    fetch(`http://localhost:8080/cliente/search${query}`)
+    fetch(`http://82.29.59.62:9090/cliente/search${query}`)
       .then(async (response) => {
         if (!response.ok) {
           const errorMessage = await response.text();

@@ -24,7 +24,7 @@ function SeguradoraCad() {
   const fetchSeguradoras = () => {
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
 
-    fetch(`http://localhost:8080/seguradora/search?corretoraId=${userCorretoraId}`)
+    fetch(`http://82.29.59.62:9090/seguradora/search?corretoraId=${userCorretoraId}`)
       .then(async (response) => {
         if (!response.ok) {
           const errorMessage = await response.text();
@@ -65,7 +65,7 @@ function SeguradoraCad() {
       corretoraId: userCorretoraId
     };
 
-    fetch('http://localhost:8080/seguradora/save', {
+    fetch('http://82.29.59.62:9090/seguradora/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ function SeguradoraCad() {
       corretoraId: userCorretoraId
     };
 
-    fetch(`http://localhost:8080/seguradora/update/${objSeguradora.id}`, {
+    fetch(`http://82.29.59.62:9090/seguradora/update/${objSeguradora.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ function SeguradoraCad() {
       return;
     }
 
-    fetch(`http://localhost:8080/seguradora/delete/${objSeguradora.id}`, {
+    fetch(`http://82.29.59.62:9090/seguradora/delete/${objSeguradora.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

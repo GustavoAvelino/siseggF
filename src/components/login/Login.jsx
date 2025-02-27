@@ -14,7 +14,7 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8080/usuario/login", {
+      const response = await axios.post("http://82.29.59.62:9090/usuario/login", {
         email: username,
         senha: password,
       });

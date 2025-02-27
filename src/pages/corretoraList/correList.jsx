@@ -27,7 +27,7 @@ function CorreList({isOpen, setIsOpen, selecionar, corretorasList}){
     const [objCorretora, setobjCorretora] = useState(corretora);
 
     useEffect(() => {
-        fetch('http://localhost:8080/corretora')
+        fetch('http://82.29.59.62:9090/corretora')
         .then(response => response.json())
         .then(data => setcorretoras(data));
     }, []);

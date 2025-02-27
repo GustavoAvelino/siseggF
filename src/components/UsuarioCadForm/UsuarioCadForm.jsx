@@ -15,11 +15,19 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
     validarFormulario();
   }, [obj, erroSenha]);
 
+  // Buscar apenas os produtores da corretora do usuário logado
   useEffect(() => {
-    fetch("http://localhost:8080/produtor")
-      .then(response => response.json())
-      .then(data => setProdutores(data))
-      .catch(error => console.error("Erro ao buscar produtores:", error));
+    const corretoraId = localStorage.getItem("corretoraId") || ""; // Obtém a corretora do usuário logado
+
+    if (corretoraId) {
+      fetch(`http://82.29.59.62:9090/produtor/search?corretoraId=${corretoraId}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("🔎 Produtores filtrados pela corretora:", data); // Log para verificar retorno
+          setProdutores(data);
+        })
+        .catch(error => console.error("❌ Erro ao buscar produtores:", error));
+    }
   }, []);
 
   const handleSubmit = (event) => {
@@ -108,7 +116,7 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
         </div>
 
         <div className="input-group-usuario">
-          <div className="input-field-usuario" >
+          <div className="input-field-usuario">
             <label htmlFor="roleUsuario">Nível de Autoridade:</label><br />
             <select id="roleUsuario" name="role" onKeyDown={handleKeyDown} onChange={handleRoleChange} value={role} required>
               <option value="">Selecione</option>
@@ -119,12 +127,16 @@ export const UsuarioCadForm = ({ eventoTeclado, salvar, obj, openModal, atualiza
           </div>
           
           <div className="input-field-usuario">
-            <label htmlFor="produtorPadrao">Produto Padrão:</label><br />
+            <label htmlFor="produtorPadrao">Produtor Padrão:</label><br />
             <select id="produtorPadrao" name="produtorId" onKeyDown={handleKeyDown} onChange={eventoTeclado} value={obj.produtorId || ""} required>
               <option value="">Selecione</option>
-              {produtores.map(produtor => (
-                <option key={produtor.id} value={produtor.id}>{produtor.nome}</option>
-              ))}
+              {produtores.length > 0 ? (
+                produtores.map(produtor => (
+                  <option key={produtor.id} value={produtor.id}>{produtor.nome}</option>
+                ))
+              ) : (
+                <option value="">Nenhum produtor disponível</option>
+              )}
             </select>
           </div>
         </div>

@@ -1,0 +1,74 @@
+/* CancelRecusaModal.css - CSS exclusivo para o modal de Cancelamento/Recusa */
+
+.cancelRecusaModal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .cancelRecusaModal-content {
+    background-color: #fff;
+    padding: 50px;
+    border-radius: 10px;
+    width: 350px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    color: #333;
+  }
+  
+  .cancelRecusaModal-content h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+  }
+  
+  .cancelRecusaModal-field {
+    margin-bottom: 15px;
+  }
+  
+  .cancelRecusaModal-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .cancelRecusaModal-field input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    background-color: #f9f9f9;
+  }
+  
+  .cancelRecusaModal-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .cancelRecusaModal-buttons button {
+    flex: 1;
+    padding: 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cancelRecusaModal-buttons button:hover {
+    background-color: #2980b9;
+  }
+  

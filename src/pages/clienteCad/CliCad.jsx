@@ -37,7 +37,7 @@ function ClienteCad() {
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
     console.log('Buscando clientes da corretora:', userCorretoraId);
 
-    const url = `http://localhost:8080/cliente/search?corretoraId=${userCorretoraId}`;
+    const url = `http://82.29.59.62:9090/cliente/search?corretoraId=${userCorretoraId}`;
 
     fetch(url)
       .then(async response => {
@@ -99,7 +99,7 @@ function ClienteCad() {
 
     const clienteParaSalvar = { ...objCliente, corretoraId: userCorretoraId };
 
-    fetch('http://localhost:8080/cliente/save', {
+    fetch('http://82.29.59.62:9090/cliente/save', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ function ClienteCad() {
     const userCorretoraId = localStorage.getItem('corretoraId') || '';
     const clienteParaSalvar = { ...objCliente, corretoraId: userCorretoraId };
 
-    fetch(`http://localhost:8080/cliente/update/${objCliente.id}`, {
+    fetch(`http://82.29.59.62:9090/cliente/update/${objCliente.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ function ClienteCad() {
       return;
     }
 
-    fetch(`http://localhost:8080/cliente/delete/${objCliente.id}`, {
+    fetch(`http://82.29.59.62:9090/cliente/delete/${objCliente.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

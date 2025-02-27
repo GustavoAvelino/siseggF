@@ -29,7 +29,7 @@ export const SeguradoraList = ({ vetor, selecionar, closeModal }) => {
     // Sempre filtra pela corretora
     query += `corretoraId=${userCorretoraId}`;
 
-    fetch(`http://localhost:8080/seguradora/search${query}`)
+    fetch(`http://82.29.59.62:9090/seguradora/search${query}`)
       .then((response) => {
         if (!response.ok) {
           // se vier 404, retorna lista vazia
